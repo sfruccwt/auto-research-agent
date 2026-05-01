@@ -147,7 +147,6 @@
 - **wiki INGEST 边界**：runner 投递到 inbox 之后，wiki 那边的 INGEST + retire 流程（包括把 idea frontmatter 改 `status: done` + 填 `output:` + 移到 `done/`）由 wiki 侧自行处理，runner 不跨界干预。
 - **拒收与重做**：wiki INGEST 拒收 runner 成果属于 wiki 侧的事，runner 不设 rejection 信道。如用户希望 runner 重跑某个已投递的 idea，按 FR-021 走（runner 警告已投递，用户显式确认）。
 - **初始化遗留**：wiki 中早于本 runner 运行的、已经 `status: done` 的 idea 全部被扫描对齐过滤，不视为异常。
-- **校准期**：本 spec 瞄准的是当前的校准期（runner 与 SOP 都在磨合中），所以三道门均要求用户参与。当 SOP 与 runner 行为稳定到值得放手时，松绑某些门是另一个 spec。
 - **工具可用性**：本工作区可用的搜索 / 抓取工具至少包含 Claude Code 内置 WebSearch / WebFetch、Exa MCP、agent-reach；具体工具选择是 plan 阶段决定，不影响 spec。
 - **用户角色**：单用户场景。不考虑多用户、协作权限、共享 queue 等。
 - **隐私**：MVP 不在投递文件中过滤敏感内容（早期阶段假设所有 idea 都是用户自己的、wiki 也是私人的）。后续若 wiki 上线公开，相关 idea / inbox 走 `.gitignore` 而非 runner 内过滤。
