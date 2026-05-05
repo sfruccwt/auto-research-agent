@@ -101,7 +101,7 @@
 - **FR-019**: Runner MAY 读取 wiki `research/ideas/`（含 `done/` 子目录）下任意 idea 文件的内容与 frontmatter——这属于"扫描对齐"必要的只读访问
 
 #### 完成跟踪与扫描对齐（P2）
-- **FR-020**: Runner MUST 维护 `queue/done/<quarter>.md`，每次成功投递后追加一条记录，包含 idea slug、run-id、投递时间、inbox 目标路径
+- **FR-020**: Runner MUST 维护 `queue/done/<quarter>.json`，每次成功投递后追加一条记录，包含 idea slug、run-id、投递时间、inbox 目标路径
 - **FR-021**: Runner MUST 在启动一个 idea 的 run 之前检查本地 done 集合；若该 idea slug 已有投递记录，MUST 警告用户并要求显式确认是否真的要重跑
 - **FR-022**: Runner MUST 提供"扫描对齐"动作（用户问"有什么可跑"时触发）：列出 wiki `research/ideas/` 及 `research/ideas/done/` 下所有 idea 文件，读 frontmatter 的 `status` 字段，与本地 done / abandoned 集合对齐，按下表分类呈报：
 
@@ -113,7 +113,7 @@
   | done / abandoned | * | 不关 runner 的事（含初始化遗留） | 过滤，不呈报 |
 
 - **FR-023**: Runner MUST 在扫描对齐结果中明确区分"可跑"、"awaiting ingest"、"previously abandoned"三类，避免用户误判
-- **FR-024**: Runner 中途放弃一个 run 时（无投递就停下）MUST 在 `queue/abandoned/<quarter>.md` 记录一条，含 idea slug、run-id、放弃时间、放弃原因摘要
+- **FR-024**: Runner 中途放弃一个 run 时（无投递就停下）MUST 在 `queue/abandoned/<quarter>.json` 记录一条，含 idea slug、run-id、放弃时间、放弃原因摘要
 
 #### 恢复（P3）
 - **FR-025**: Runner MUST 在新会话开始且收到"继续 <run-id>"指令时，能从 `runs/<id>/` 恢复 context 并继续推进

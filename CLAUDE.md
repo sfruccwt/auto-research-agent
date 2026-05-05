@@ -24,6 +24,11 @@ The deliverable is **content-finalized, not wiki-ready**: prose with inline sour
 - Do not edit any idea file in `research/ideas/` (including its `status` frontmatter field). Idea lifecycle is managed wiki-side.
 - Reading idea files for scan-and-align purposes (listing `research/ideas/`, reading frontmatter) is allowed.
 
+## Working a run
+
+- 启动一个 run 时，读 `sop/workflow.md`、`sop/flow-card.md`、`sop/templates.md`——这是研究执行的运行时指南。
+- 机械动作（扫描对齐 / 建 run 目录 / 投递 / 读写 queue）走 `scripts/` 下的脚本，不要手写文件操作。脚本契约见 `specs/001-research-runner-mvp/contracts/`。
+
 ## Project Status
 
 Spec Kit sub-project under `D:/developing_project/`. Spec Kit conventions and monorepo workflow are in `D:/developing_project/CLAUDE.md`.
