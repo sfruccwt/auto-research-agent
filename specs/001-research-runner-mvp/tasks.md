@@ -47,7 +47,7 @@
 - [ ] T005 [P] [US1] Implement `scripts/new-run.ps1` per `specs/001-research-runner-mvp/contracts/new-run.md` — 8 steps: validate path → derive run_id → check done → create dirs → freeze idea → init log → update in_flight → output path
 - [ ] T006 [P] [US1] Implement `scripts/deliver.ps1` per `specs/001-research-runner-mvp/contracts/deliver.md` — 9 steps: validate output.md → check frontmatter → compute target path → handle collision → copy file → add done record → remove in_flight → append log → output path
 - [ ] T007 [US1] Update `specs/001-research-runner-mvp/quickstart.md` to use unified filenames (`notes/task-card.md`, `notes/judgment.md`, `notes/memo.md`) and gate values (`opening`/`midway`/`closing`) per plan.md
-- [ ] T008 [US1] Smoke test: execute quickstart.md scenario end-to-end with one migration idea — verify SC-001 (single session draft), SC-003 (source citations), SC-005 (boundary), SC-006 (no fabrication)
+- [ ] T008 [US1] Smoke test: execute quickstart.md scenario end-to-end with one migration idea — verify SC-001 (single session draft), SC-003 (source citations), SC-005 (boundary), SC-006 (no fabrication), FR-011 (git log contains revision commits during drafting)
 
 **Checkpoint**: 一个 idea 从 wiki → runs/<id>/ → wiki inbox 端到端跑通，log.md 有完整事件记录
 
