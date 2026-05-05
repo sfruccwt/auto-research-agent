@@ -35,14 +35,14 @@ runner → Read sop/workflow.md, sop/flow-card.md, sop/templates.md
 runner → 按 SOP 起草研究任务卡，写入 runs/<id>/notes/task-card.md
 runner → 呈给 user 看，等显式信号
 你 → "OK，开题门过"
-runner → 在 log.md 追加 event=gate_passed | gate=open | by=user
+runner → 在 log.md 追加 event=gate_passed | gate=opening | by=user
 ```
 
 ### 4. 第一轮研究 + 中途门
 
 ```
 runner → 用 agent-reach 搜索建图，按 SOP 第二步 / 第三步 / 第四步
-runner → 写 runs/<id>/notes/judgment-sheet.md
+runner → 写 runs/<id>/notes/judgment.md
 runner → 呈给 user 看，等显式信号
 你 → "中途门过"
 runner → log.md 追加
@@ -52,8 +52,8 @@ runner → log.md 追加
 
 ```
 runner → 第二轮补关键缺口
-runner → 写 notes/decision-memo.md（按 SOP 模板 3）
-runner → 综合写 runs/<id>/output.md（按 templates/inbox-output.md 渲染 frontmatter）
+runner → 写 notes/memo.md（按 SOP 模板 3）
+runner → 等用户确认收尾门后，合成 runs/<id>/output.md（按 templates/inbox-output.md 渲染 frontmatter）
 你 → 提修改意见
 runner → 改 output.md（git commit 留痕）
 ... 多轮直到你认可

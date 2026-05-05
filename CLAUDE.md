@@ -29,6 +29,21 @@ The deliverable is **content-finalized, not wiki-ready**: prose with inline sour
 - 启动一个 run 时，读 `sop/workflow.md`、`sop/flow-card.md`、`sop/templates.md`——这是研究执行的运行时指南。
 - 机械动作（扫描对齐 / 建 run 目录 / 投递 / 读写 queue）走 `scripts/` 下的脚本，不要手写文件操作。脚本契约见 `specs/001-research-runner-mvp/contracts/`。
 
+## Resuming an interrupted run
+
+When the user says "继续 <run-id>" (or equivalent):
+
+1. Read `runs/<run-id>/idea.md` — recall the research topic
+2. Read `runs/<run-id>/log.md` — identify the last event to determine current stage:
+   - Last event `run_init` or `gate_passed | gate=opening` → still in first-round research
+   - Last event `gate_passed | gate=midway` → in second-round / closing phase
+   - Last event `gate_passed | gate=closing` or `draft_ready` → in revision loop
+   - Last event `revision` → mid-revision, continue iterating
+3. Read all files in `runs/<run-id>/notes/` — recover task-card, judgment, memo if they exist
+4. Read `runs/<run-id>/output.md` if it exists — recover draft state
+5. Summarize to the user: what stage the run is at, what's been produced so far, and propose the next step
+6. Then re-read `sop/workflow.md`, `sop/flow-card.md`, `sop/templates.md` and continue from the identified stage
+
 ## Project Status
 
 Spec Kit sub-project under `D:/developing_project/`. Spec Kit conventions and monorepo workflow are in `D:/developing_project/CLAUDE.md`.
