@@ -1,1 +1,11 @@
-{"version": 1, "items": []}
+{
+  "items": [
+    {
+      "current_gate": "opening",
+      "started": "2026-05-05T16:39:27+08:00",
+      "run_id": "2026-04-29-ai-trust-layer",
+      "idea_slug": "2026-04-29-ai-trust-layer"
+    }
+  ],
+  "version": 1
+}
