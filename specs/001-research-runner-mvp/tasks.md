@@ -1,166 +1,152 @@
 # Tasks: Research Runner MVP
 
-**Input**: Design documents from `specs/001-research-runner-mvp/`
-**Prerequisites**: plan.md, spec.md, data-model.md, contracts/, research.md, quickstart.md
+**输入**: `specs/001-research-runner-mvp/` 下的设计文档
+**前置**: plan.md, spec.md, data-model.md, contracts/, research.md, quickstart.md
 
-**Tests**: 手动 smoke run（用迁移 idea 跑端到端），无自动测试框架。
+**测试**: 手动 smoke run（用迁移 idea 跑端到端），无自动测试框架。
 
-**Organization**: Tasks grouped by user story. US1 = MVP scope.
+**组织方式**: 按 user story 分组。US1 = MVP 范围。
 
-## Format: `[ID] [P?] [Story] Description`
+## 格式: `[ID] [P?] [Story] 描述`
 
-- **[P]**: Can run in parallel (different files, no dependencies)
+- **[P]**: 可并行（不同文件、无依赖）
 - **[Story]**: US1 / US2 / US3
 
 ---
 
-## Phase 1: Setup
+## Phase 1: 初始化
 
-**Purpose**: 创建目录结构和空状态文件，让脚本有可写入的目标位置
+**目的**: 创建目录结构和空状态文件，让脚本有可写入的目标位置
 
-- [ ] T001 Create `scripts/` directory at repository root
-- [ ] T002 Create `queue/` directory structure with initial empty JSON files: `queue/pending.json`, `queue/in_flight.json`, `queue/done/` (dir), `queue/abandoned/` (dir) — each JSON initialized with `{"version": 1, "items": []}`
-- [ ] T003 [P] Create `runs/.gitkeep` to ensure directory is tracked
-
----
-
-## Phase 2: Foundational (Blocking Prerequisites)
-
-**Purpose**: queue.ps1 是其他三个脚本的共享依赖，必须先完成
-
-**⚠️ CRITICAL**: new-run / deliver / scan-and-align 全部 dot-source queue.ps1，此 phase 完成前不能开始任何 user story
-
-- [ ] T004 Implement `scripts/queue.ps1` shared function library per `specs/001-research-runner-mvp/contracts/queue.md` — 9 functions: Get-QueuePending, Get-QueueInFlight, Get-QueueDone, Get-QueueAbandoned, Add-QueueDone, Add-QueueAbandoned, Add-QueueInFlight, Remove-QueueInFlight, Get-CurrentQuarter
-
-**Checkpoint**: queue.ps1 可独立验证——调用各 Get-* 函数对空 JSON 返回空数组，调用 Add-* 后 JSON 文件正确写入
+- [x] T001 在仓库根目录创建 `scripts/` 目录
+- [x] T002 创建 `queue/` 目录结构及初始空 JSON：`queue/pending.json`、`queue/in_flight.json`、`queue/done/`（目录）、`queue/abandoned/`（目录）——每个 JSON 初始化为 `{"version": 1, "items": []}`
+- [x] T003 [P] 创建 `runs/.gitkeep` 确保目录被 git 跟踪
 
 ---
 
-## Phase 3: User Story 1 — 单 idea 端到端跑通 (Priority: P1) 🎯 MVP
+## Phase 2: 基础设施（阻塞性前置）
 
-**Goal**: 给一个 idea 路径，runner 能建 run 目录、冻结快照、跑完研究后投递到 wiki inbox
+**目的**: queue.ps1 是其他三个脚本的共享依赖，必须先完成
 
-**Independent Test**: 用 `2026-05-01-modernity-wang-minan-thirteen-lectures` 跑 quickstart.md 全流程
+**⚠️ 关键**: new-run / deliver / scan-and-align 全部 dot-source queue.ps1，此 phase 完成前不能开始任何 user story
 
-### Implementation for User Story 1
+- [x] T004 实现 `scripts/queue.ps1` 共享函数库，按 `contracts/queue.md` 契约——9 个函数：Get-QueuePending, Get-QueueInFlight, Get-QueueDone, Get-QueueAbandoned, Add-QueueDone, Add-QueueAbandoned, Add-QueueInFlight, Remove-QueueInFlight, Get-CurrentQuarter
 
-- [ ] T005 [P] [US1] Implement `scripts/new-run.ps1` per `specs/001-research-runner-mvp/contracts/new-run.md` — 8 steps: validate path → derive run_id → check done → create dirs → freeze idea → init log → update in_flight → output path
-- [ ] T006 [P] [US1] Implement `scripts/deliver.ps1` per `specs/001-research-runner-mvp/contracts/deliver.md` — 9 steps: validate output.md → check frontmatter → compute target path → handle collision → copy file → add done record → remove in_flight → append log → output path
-- [ ] T007 [US1] Update `specs/001-research-runner-mvp/quickstart.md` to use unified filenames (`notes/task-card.md`, `notes/judgment.md`, `notes/memo.md`) and gate values (`opening`/`midway`/`closing`) per plan.md
-- [ ] T008 [US1] Smoke test: execute quickstart.md scenario end-to-end with one migration idea — verify SC-001 (single session draft), SC-003 (source citations), SC-005 (boundary), SC-006 (no fabrication), FR-011 (git log contains revision commits during drafting)
-
-**Checkpoint**: 一个 idea 从 wiki → runs/<id>/ → wiki inbox 端到端跑通，log.md 有完整事件记录
+**检查点**: queue.ps1 可独立验证——各 Get-* 对空 JSON 返回空数组，Add-* 后 JSON 文件正确写入
 
 ---
 
-## Phase 4: User Story 2 — 扫描对齐与候选呈报 (Priority: P2)
+## Phase 3: US1 — 单 idea 端到端跑通 (P1) 🎯 MVP
 
-**Goal**: 用户问"有什么可跑"，runner 扫描 wiki ideas 与本地 queue 状态，分类呈报
+**目标**: 给一个 idea 路径，runner 能建 run 目录、冻结快照、按 SOP 跑完研究后投递到 wiki inbox
 
-**Independent Test**: wiki `research/ideas/` 中有混合状态（pending + 已投递 + abandoned），扫描对齐正确分类四象限
+**独立验证**: 用 `2026-05-01-modernity-wang-minan-thirteen-lectures` 跑 quickstart.md 全流程
 
-### Implementation for User Story 2
+### 实现
 
-- [ ] T009 [US2] Implement `scripts/scan-and-align.ps1` per `specs/001-research-runner-mvp/contracts/scan-and-align.md` — 5 steps: list idea files → read frontmatter → load local queue → classify per FR-022 table → output JSON
-- [ ] T010 [US2] Smoke test: prepare mixed wiki state (at least 1 runnable + 1 already-delivered idea), run scan-and-align, verify JSON output matches expected classification
+- [x] T005 [P] [US1] 实现 `scripts/new-run.ps1`，按 `contracts/new-run.md` 契约——8 步：校验路径 → 推导 run_id → 检查 done → 建目录 → 冻结 idea → 初始化 log → 写 in_flight → 输出路径
+- [x] T006 [P] [US1] 实现 `scripts/deliver.ps1`，按 `contracts/deliver.md` 契约——9 步：校验 output.md → 检查 frontmatter → 计算目标路径 → 处理同名冲突 → 拷贝文件 → 写 done 记录 → 移除 in_flight → 追加 log → 输出路径
+- [x] T007 [US1] 更新 `quickstart.md`：统一文件名（`notes/task-card.md`、`notes/judgment.md`、`notes/memo.md`）和 gate 值（`opening`/`midway`/`closing`）
+- [ ] T008 [US1] 烟测：用一个迁移 idea 跑 quickstart.md 全流程端到端——验证 SC-001（单会话出 draft）、SC-003（来源引用）、SC-005（边界）、SC-006（无编造）、FR-011（git log 含修订 commit）
 
-**Checkpoint**: alignment report 正确区分 runnable / awaiting_ingest / previously_abandoned 三类
-
----
-
-## Phase 5: User Story 3 — 中断后可恢复 (Priority: P3)
-
-**Goal**: 跨会话时 runner 能从 `runs/<id>/` 恢复上下文并继续
-
-**Independent Test**: 主动跑一个 idea 到中途停下，重启会话，告诉 runner "继续"，验证恢复
-
-### Implementation for User Story 3
-
-- [ ] T011 [US3] Add resume protocol to `CLAUDE.md` — 明确：收到"继续 <run-id>"时 runner 应读取哪些文件（idea.md + log.md + notes/* + output.md if exists）、如何从最近事件推断当前阶段、如何向用户复述进度
-- [ ] T012 [US3] Smoke test: interrupt a run after midway gate, start new session, say "继续 <run-id>", verify runner correctly identifies current stage and proposes next step
-
-**Checkpoint**: Runner 能在新会话中正确恢复中断的 run 并继续推进
+**检查点**: 一个 idea 从 wiki → runs/<id>/ → wiki inbox 端到端跑通，log.md 有完整事件记录
 
 ---
 
-## Phase 6: Polish & Cross-Cutting Concerns
+## Phase 4: US2 — 扫描对齐与候选呈报 (P2)
 
-**Purpose**: 全流程验证与收尾
+**目标**: 用户问"有什么可跑"，runner 扫描 wiki ideas 与本地 queue 状态，分类呈报
 
-- [ ] T013 Run second migration idea end-to-end (满足 SC-002: 4 个迁移 idea 中至少 2 个跑通)
-- [ ] T014 Verify all success criteria SC-001 ~ SC-006 against completed runs
-- [ ] T015 [P] Review and clean up any leftover TODO/placeholder in CLAUDE.md, plan.md
+**独立验证**: wiki `research/ideas/` 中有混合状态（pending + 已投递 + abandoned），扫描对齐正确分三类
 
----
+### 实现
 
-## Dependencies & Execution Order
+- [x] T009 [US2] 实现 `scripts/scan-and-align.ps1`，按 `contracts/scan-and-align.md` 契约——5 步：列出 idea 文件 → 读 frontmatter → 加载本地 queue → 按 FR-022 表分类 → 输出 JSON
+- [ ] T010 [US2] 烟测：确保至少 1 个 runnable + 1 个已投递的 idea 存在，跑 scan-and-align，验证 JSON 输出分类正确
 
-### Phase Dependencies
-
-- **Setup (Phase 1)**: No dependencies — can start immediately
-- **Foundational (Phase 2)**: Depends on Phase 1 (directories must exist for queue.ps1 to write)
-- **US1 (Phase 3)**: Depends on Phase 2 (new-run + deliver both dot-source queue.ps1)
-- **US2 (Phase 4)**: Depends on Phase 2 (scan-and-align dot-sources queue.ps1). Independent of US1.
-- **US3 (Phase 5)**: Depends on US1 being complete (needs a real run to test resume against)
-- **Polish (Phase 6)**: Depends on US1 + US2 both complete
-
-### User Story Dependencies
-
-- **US1 (P1)**: Can start after Foundational — No dependencies on other stories
-- **US2 (P2)**: Can start after Foundational — Independent of US1 (parallel opportunity)
-- **US3 (P3)**: Depends on US1 (needs existing run with log data to resume from)
-
-### Within Each User Story
-
-- Scripts before smoke tests
-- T005 and T006 are parallel (different scripts, both depend only on queue.ps1)
-
-### Parallel Opportunities
-
-- T001 + T003: both create directories, no conflict
-- T005 + T006: new-run.ps1 and deliver.ps1 are independent scripts
-- US1 (Phase 3) and US2 (Phase 4) can run in parallel after Foundational
-- T013 + T015: independent polish tasks
+**检查点**: alignment report 正确区分 runnable / awaiting_ingest / previously_abandoned 三类
 
 ---
 
-## Parallel Example: Phase 3 (US1)
+## Phase 5: US3 — 中断后可恢复 (P3)
 
-```
-# After Phase 2 (queue.ps1) is done, launch in parallel:
-Task T005: "Implement new-run.ps1"
-Task T006: "Implement deliver.ps1"
+**目标**: 跨会话时 runner 能从 `runs/<id>/` 恢复上下文并继续
 
-# After both complete:
-Task T007: "Update quickstart.md filenames"
-Task T008: "Smoke test end-to-end"
-```
+**独立验证**: 主动跑一个 idea 到中途停下，重启会话，告诉 runner "继续"，验证恢复
 
----
+### 实现
 
-## Implementation Strategy
+- [x] T011 [US3] 在 `CLAUDE.md` 添加 resume protocol——明确：收到"继续 <run-id>"时 runner 读取哪些文件（idea.md + log.md + notes/* + output.md）、如何从最近事件推断阶段、如何向用户复述进度
+- [ ] T012 [US3] 烟测：跑一个 idea 到中途门后停下，新会话说"继续 <run-id>"，验证 runner 正确识别当前阶段并提出下一步
 
-### MVP First (User Story 1 Only)
-
-1. Complete Phase 1: Setup (T001–T003)
-2. Complete Phase 2: queue.ps1 (T004)
-3. Complete Phase 3: new-run + deliver + smoke test (T005–T008)
-4. **STOP and VALIDATE**: Run quickstart.md scenario, verify SC-001/003/005/006
-5. MVP done — runner can execute a single research idea end-to-end
-
-### Incremental Delivery
-
-1. Setup + Foundational → scripts infrastructure ready
-2. US1 → single idea runs → **MVP deliverable**
-3. US2 → scan-and-align → user can discover candidates
-4. US3 → resume → cross-session robustness
-5. Polish → second idea + SC validation → release confidence
+**检查点**: Runner 能在新会话中正确恢复中断的 run 并继续推进
 
 ---
 
-## Notes
+## Phase 6: 收尾与交叉验证
 
-- 本项目 "runner 行为" 由 Claude 在对话中按 CLAUDE.md + SOP 规约执行，不需要对应的 task
+**目的**: 全流程验证与清理
+
+- [ ] T013 跑第二个迁移 idea 端到端（满足 SC-002: 4 个迁移 idea 中至少 2 个跑通）
+- [ ] T014 对照 SC-001 ~ SC-006 逐条确认所有已完成 run 的验收结果
+- [ ] T015 [P] 扫一遍 CLAUDE.md、plan.md，清理遗留的 TODO/placeholder
+
+---
+
+## 依赖与执行顺序
+
+### Phase 间依赖
+
+- **Phase 1（初始化）**: 无依赖，立即开始
+- **Phase 2（基础设施）**: 依赖 Phase 1（目录必须存在才能写 JSON）
+- **US1（Phase 3）**: 依赖 Phase 2（new-run + deliver 都 dot-source queue.ps1）
+- **US2（Phase 4）**: 依赖 Phase 2（scan-and-align 也 dot-source queue.ps1），与 US1 独立
+- **US3（Phase 5）**: 依赖 US1（需要真实 run 数据来测试恢复）
+- **Phase 6（收尾）**: 依赖 US1 + US2 都完成
+
+### User Story 间依赖
+
+- **US1 (P1)**: Phase 2 完成后即可开始，不依赖其他 story
+- **US2 (P2)**: Phase 2 完成后即可开始，与 US1 独立（并行机会）
+- **US3 (P3)**: 依赖 US1（需要已有 run + log 数据）
+
+### 各 Story 内部顺序
+
+- 先脚本后烟测
+- T005 和 T006 可并行（不同脚本，只依赖 queue.ps1）
+
+### 并行机会
+
+- T001 + T003: 都是建目录，无冲突
+- T005 + T006: new-run.ps1 和 deliver.ps1 是独立脚本
+- US1 和 US2 在 Phase 2 完成后可并行
+- T013 + T015: 独立的收尾任务
+
+---
+
+## 实施策略
+
+### MVP 优先（只做 US1）
+
+1. 完成 Phase 1: 初始化 (T001–T003)
+2. 完成 Phase 2: queue.ps1 (T004)
+3. 完成 Phase 3: new-run + deliver + 烟测 (T005–T008)
+4. **停下验证**: 跑 quickstart.md 场景，确认 SC-001/003/005/006
+5. MVP 完成——runner 可以端到端跑一个研究 idea
+
+### 增量交付
+
+1. 初始化 + 基础设施 → 脚本骨架就位
+2. US1 → 单 idea 可跑 → **MVP 可交付**
+3. US2 → scan-and-align → 用户可发现候选
+4. US3 → resume → 跨会话健壮性
+5. 收尾 → 第二个 idea + SC 验收 → 发布信心
+
+---
+
+## 备注
+
+- "runner 行为"由 Claude 在对话中按 CLAUDE.md + SOP 规约执行，不产生源代码，不需要对应 task
 - 脚本契约已在 `contracts/` 中完整定义，实现时逐条对照即可
-- 测试策略为手动 smoke run（research.md D7），不引入 Pester
-- 每个脚本完成后立即手测基本 happy path + 至少一个 edge case（如同名冲突、已投递检查）
+- 测试策略为手动 smoke run（见 research.md D7），不引入 Pester
+- 每个脚本完成后立即手测 happy path + 至少一个 edge case（同名冲突、已投递检查等）
