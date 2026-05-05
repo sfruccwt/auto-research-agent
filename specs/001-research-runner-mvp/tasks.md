@@ -47,8 +47,6 @@
 - [x] T005 [P] [US1] 实现 `scripts/new-run.ps1`，按 `contracts/new-run.md` 契约——8 步：校验路径 → 推导 run_id → 检查 done → 建目录 → 冻结 idea → 初始化 log → 写 in_flight → 输出路径
 - [x] T006 [P] [US1] 实现 `scripts/deliver.ps1`，按 `contracts/deliver.md` 契约——9 步：校验 output.md → 检查 frontmatter → 计算目标路径 → 处理同名冲突 → 拷贝文件 → 写 done 记录 → 移除 in_flight → 追加 log → 输出路径
 - [x] T007 [US1] 更新 `quickstart.md`：统一文件名（`notes/task-card.md`、`notes/judgment.md`、`notes/memo.md`）和 gate 值（`opening`/`midway`/`closing`）
-- [ ] T008 [US1] 烟测：用一个迁移 idea 跑 quickstart.md 全流程端到端——验证 SC-001（单会话出 draft）、SC-003（来源引用）、SC-005（边界）、SC-006（无编造）、FR-011（git log 含修订 commit）
-
 **检查点**: 一个 idea 从 wiki → runs/<id>/ → wiki inbox 端到端跑通，log.md 有完整事件记录
 
 ---
@@ -62,9 +60,6 @@
 ### 实现
 
 - [x] T009 [US2] 实现 `scripts/scan-and-align.ps1`，按 `contracts/scan-and-align.md` 契约——5 步：列出 idea 文件 → 读 frontmatter → 加载本地 queue → 按 FR-022 表分类 → 输出 JSON
-- [ ] T010 [US2] 烟测：确保至少 1 个 runnable + 1 个已投递的 idea 存在，跑 scan-and-align，验证 JSON 输出分类正确
-
-**检查点**: alignment report 正确区分 runnable / awaiting_ingest / previously_abandoned 三类
 
 ---
 
@@ -77,19 +72,21 @@
 ### 实现
 
 - [x] T011 [US3] 在 `CLAUDE.md` 添加 resume protocol——明确：收到"继续 <run-id>"时 runner 读取哪些文件（idea.md + log.md + notes/* + output.md）、如何从最近事件推断阶段、如何向用户复述进度
-- [ ] T012 [US3] 烟测：跑一个 idea 到中途门后停下，新会话说"继续 <run-id>"，验证 runner 正确识别当前阶段并提出下一步
-
-**检查点**: Runner 能在新会话中正确恢复中断的 run 并继续推进
 
 ---
 
-## Phase 6: 收尾与交叉验证
+## 烟测（全部待执行）
 
-**目的**: 全流程验证与清理
+以下测试需要用户参与，按依赖顺序排列：
 
-- [ ] T013 跑第二个迁移 idea 端到端（满足 SC-002: 4 个迁移 idea 中至少 2 个跑通）
-- [ ] T014 对照 SC-001 ~ SC-006 逐条确认所有已完成 run 的验收结果
-- [ ] T015 [P] 扫一遍 CLAUDE.md、plan.md，清理遗留的 TODO/placeholder
+| ID | 依赖 | 做什么 | 通过标准 |
+|---|---|---|---|
+| T008 | T005+T006 | 用一个迁移 idea 跑 quickstart.md 全流程端到端 | SC-001（单会话出 draft）、SC-003（来源引用）、SC-005（边界）、SC-006（无编造）、FR-011（git log 含修订 commit） |
+| T010 | T008+T009 | T008 跑完后执行 scan-and-align，验证分类 | 刚投递的 idea 出现在 `awaiting_ingest`，其余 pending idea 在 `runnable` |
+| T012 | T008 | 跑一个 idea 到中途门后停下，新会话说"继续 <run-id>" | runner 正确识别当前阶段并提出下一步，不重复已做工作 |
+| T013 | T008 | 跑第二个迁移 idea 端到端 | 同 T008（满足 SC-002: 至少 2 个跑通） |
+| T014 | T008+T013 | 对照 SC-001 ~ SC-006 逐条确认 | 6 条全过 |
+| T015 | — | 扫一遍 CLAUDE.md、plan.md，清理遗留 TODO/placeholder | 无残留 |
 
 ---
 
