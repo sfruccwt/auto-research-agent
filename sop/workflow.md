@@ -13,8 +13,7 @@
 |---|---|---|
 | `stages/0-global.md` | 全阶段通用规则（来源标注、搜索工具、概念确认制） | 每次过门都重读 |
 | `stages/1-opening.md` | 开题：定义问题 + 关键词压测 + 开题门检查 | run 启动时 |
-| `stages/2-research.md` | 搜索与判断：检索面设计 → 建图 → 提取 → 反驳 → 中途门 → 补缺 → 综合判断 | opening 门通过后 |
-| `stages/3-closing.md` | 收尾：memo → output、动作分流、补查、状态更新 | 进入收尾时 |
+| `stages/2-research.md` | 搜索、判断与收尾：检索面设计 → 建图 → 判断 → 补缺 → memo → output | opening 门通过后 |
 
 ---
 

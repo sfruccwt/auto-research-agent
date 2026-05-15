@@ -45,9 +45,10 @@ The deliverable is **content-finalized, not wiki-ready**: prose with inline sour
 ## Working a run
 
 - 启动一个 run 时，读 `sop/workflow.md`（概览索引）、`sop/flow-card.md`、`sop/templates.md`（模板索引，按需读取具体模板文件）+ `sop/stages/0-global.md` + `sop/stages/1-opening.md`——这是研究执行的运行时指南。
-- **阶段指引重读**：每次过门（调用 `Update-QueueGate`）后，必须重读 `sop/stages/0-global.md` + 当前阶段对应的 stage 文件：
-  - `gate=opening` 通过后 → 读 `sop/stages/2-research.md`
-  - 进入收尾 → 读 `sop/stages/3-closing.md`
+- **产物驱动过门**：写完标志产物后，必须调用 `Update-QueueGate` 并重读对应 stage 文件：
+  - 写完 `notes/task-card.md` → `Update-QueueGate -Gate opening` → 重读 `stages/0-global.md` + `stages/2-research.md`
+  - 写完 `notes/judgment.md` → `Update-QueueGate -Gate midway`
+  - 写完 `output.md` → `Update-QueueGate -Gate done`
 - 启动方式有两种：(1) 用户指定已有 idea 文件时，调 `new-run.ps1 -IdeaPath <path>`；(2) 用户在对话中口述研究主题时，调 `new-run.ps1 -Topic "<主题>" [-Slug "<slug>"]`，脚本会在 `ideas/` 本地池创建 idea 文件并自动开 run。
 - 机械动作（扫描对齐 / 建 run 目录 / 投递 / 结项 / 读写 queue）走 `scripts/` 下的脚本，不要手写文件操作。脚本契约见 `specs/001-research-runner-mvp/contracts/` 和 `specs/002-runner-lifecycle-sop/contracts/`。
 - 写完 output.md 后，调用 `Update-QueueGate -RunId <id> -Gate done` 更新 run 状态。
@@ -74,14 +75,14 @@ When the user says "继续 <run-id>" (or equivalent):
 
 1. Read `runs/<run-id>/idea.md` — recall the research topic
 2. Read `runs/<run-id>/log.md` — identify the last event to determine current stage:
-   - Last event `run_init` or `gate_passed | gate=opening` → still in first-round research
-   - Last event `gate_passed | gate=midway` → in second-round / closing phase
-   - Last event `gate_passed | gate=closing` or `draft_ready` → in revision loop
-   - Last event `revision` → mid-revision, continue iterating
+   - Last event `run_init` → 还未开题，读 `stages/1-opening.md`
+   - Last event `gate_updated | gate=opening` → 搜索与判断阶段，读 `stages/2-research.md`
+   - Last event `gate_updated | gate=midway` → 补缺/收口阶段，读 `stages/2-research.md`
+   - Last event `gate_updated | gate=done` → 已完成
 3. Read all files in `runs/<run-id>/notes/` — recover task-card, judgment, memo if they exist
 4. Read `runs/<run-id>/output.md` if it exists — recover draft state
 5. Summarize to the user: what stage the run is at, what's been produced so far, and propose the next step
-6. Re-read `sop/stages/0-global.md` + 当前阶段对应的 stage 文件（1-opening / 2-research / 3-closing），以及 `sop/flow-card.md`、`sop/templates.md`，然后继续
+6. Re-read `sop/stages/0-global.md` + 当前阶段对应的 stage 文件（1-opening / 2-research），以及 `sop/flow-card.md`、`sop/templates.md`，然后继续
 
 ## 写作规则
 

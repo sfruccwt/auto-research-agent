@@ -60,3 +60,15 @@
 - 对"要回答的问题"中每个关键词做主语/领域/动作确认
 
 **不开题门，不开搜。**
+
+---
+
+## 过门：opening
+
+写完 `notes/task-card.md` 后，执行：
+
+```powershell
+Update-QueueGate -RunId <id> -Gate opening
+```
+
+然后重读 `sop/stages/0-global.md` + `sop/stages/2-research.md`，进入搜索与判断阶段。

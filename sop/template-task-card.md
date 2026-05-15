@@ -37,10 +37,10 @@
 ## 工具分配
 | 检索面 | 工具 |
 |---|---|
-| 官方/原始 | WebSearch |
-| 市场/新闻 | WebSearch |
-| 学术 | Semantic Scholar / WebSearch |
-| 社区/案例 | agent-reach + WebSearch（双路并行） |
+| 官方/原始 | agent-reach (web) |
+| 市场/新闻 | agent-reach (search / web) |
+| 学术 | Semantic Scholar / agent-reach |
+| 社区/案例 | agent-reach (social / dev) |
 
 ## 本轮动作上限（先预设）
 - [ ] 只建图
