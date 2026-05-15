@@ -1,0 +1,14 @@
+# Private research data
+runs/
+ideas/
+
+# Queue archives (keep structure files, exclude archives)
+queue/closed/
+queue/done/
+
+# Spec Kit internals
+.specify/
+specs/
+
+# Claude Code internals
+.claude/

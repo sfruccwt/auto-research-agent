@@ -34,9 +34,9 @@
 
 **Acceptance Scenarios**:
 
-1. **Given** 一个 run 已有结论但不适合投递，**When** 用户告诉 runner "这个课题轻量结项"，**Then** runner 在 `runs/<id>/notes/` 下写一个 `closing-summary.md`（含结论摘要、不投递原因、派生线索），`log.md` 记录 `closed` 事件
+1. **Given** 一个 run 已有结论但不适合投递，**When** 用户告诉 runner "这个课题轻量结项"，**Then** runner 在 `runs/<id>/notes/` 下写一个 `closing-summary.md`（含结论摘要、不投递原因、后续方向建议），`log.md` 记录 `closed` 事件
 2. **Given** 一个 run 被轻量结项，**When** runner 更新本地跟踪，**Then** `queue/` 中该 run 标记为 `closed`（区别于 `delivered` 和 `abandoned`），扫描对齐时此 idea 不再列入"可跑"
-3. **Given** 一个被轻量结项的 run，**When** 用户后续想基于该结论开新课题，**Then** `closing-summary.md` 中的派生线索可作为新 run 的起点参考
+3. **Given** 一个被轻量结项的 run，**When** 用户后续想基于该结论开新课题，**Then** `closing-summary.md` 中的后续方向建议可作为新 run 的起点参考
 
 ---
 
@@ -90,13 +90,15 @@
 #### 双 idea 池与就地创建（扩展 FR-001）
 - **FR-101**: Runner MUST 维护本地 idea 池（`ideas/` 目录），与 Wiki 池（`D:/Personal LLM Wiki/research/ideas/`）并列为两个独立的 idea 来源
 - **FR-102**: 用户在会话中直接描述研究主题时，Runner MUST 在本地池 `ideas/` 中创建 idea 文件，同时在 `runs/<id>/idea.md` 中生成冻结快照，`source_idea` 指向本地池路径
-- **FR-103**: 从本地池启动的 run 在投递时，inbox 文件 frontmatter 的 `source_idea` MUST 指向本地池路径（非 wiki 路径）
+- **FR-103**: 从本地池启动的 run 在投递时，inbox 文件 frontmatter 的 `source_idea` MUST 如实记录本地池路径（非 wiki 路径）。wiki INGEST 对非 wiki 路径的处理属于 wiki 侧后续完善范围，本 feature 不做约束
 - **FR-104**: 本地池的 idea 不自动同步到 wiki `research/ideas/`——两个池独立管理，用户按需手动迁移
 - **FR-104a**: 扫描对齐 MUST 同时扫描 Wiki 池和本地池，合并呈报，按来源标注分类
 
+**Contract 影响**：现有 `scripts/new-run.ps1` 需扩展以支持本地池 idea 路径（及从口述主题直接创建 idea 的场景）；`scripts/scan-and-align.ps1` 需扩展以支持双池扫描。均为修改现有 contract，不新增脚本
+
 #### 轻量结项
-- **FR-105**: Runner MUST 支持第三种 run 终态 `closed`：有结论、不投递
-- **FR-106**: 轻量结项时 Runner MUST 在 `runs/<id>/notes/closing-summary.md` 中记录：结论摘要（1-3 句话）、不投递原因、派生线索（如有）
+- **FR-105**: Runner MUST 支持第三种 run 终态 `closed`：有结论、不投递。`closed` 可从任何中间状态转入——何时结项由用户判断，Runner 不限制来源状态
+- **FR-106**: 轻量结项时 Runner MUST 在 `runs/<id>/notes/closing-summary.md` 中记录：结论摘要（1-3 句话）、不投递原因、后续方向建议（如有）
 - **FR-107**: 轻量结项后 Runner MUST 在 `log.md` 中追加 `closed` 事件，在 `queue/closed/<quarter>.json` 中记录一条跟踪记录
 - **FR-108**: 轻量结项的 run 中所有中间产物（task-card、judgment、memo）MUST 完整保留在 `runs/<id>/` 中，不删除
 - **FR-109**: 扫描对齐时，`closed` 状态的 run 对应的 idea 不再列入"可跑"分类，但 MUST 在"已结项（未投递）"分类中列出
@@ -129,16 +131,18 @@
 - **FR-121**: `sop/workflow.md` MUST 在备忘录写作指引中增加"证据链扣紧"要求：每条来源不仅列名字，还要说明"这个来源说明了什么、为什么支撑这个结论"
 - **FR-122**: `sop/workflow.md` 中路径比较 MUST 要求每条路径写明：(1) 人类具体做什么操作；(2) 人类不做什么；(3) 与相邻路径的分界线
 
-#### 产出后追问 / 补查（轻量机制）
+#### 产出后追问 / 补查（继承自 MVP，轻量机制）
 - **FR-123**: Runner MUST 支持在 output 阶段接受用户追问并在现有 output 基础上修补，不回退到开题重走
 - **FR-124**: 追问触发的补查结果 MUST 追加到 `output.md` 对应区域，`log.md` 记录 `supplement` 事件，git commit 留痕
+
+*注：FR-123/124 是对 MVP 多轮修订流程（FR-009）的自然延伸，不属于本 feature 的四个 User Story，仅作为补充约束记录。*
 
 ### Key Entities
 
 - **Idea**：研究主题的种子。存放于两个独立的池：Wiki 池（`D:/Personal LLM Wiki/research/ideas/`，长期孵化）和 Runner 本地池（`ideas/`，临时/直接相关）。扫描对齐时两池合并呈报。
 - **Run**：生命周期扩展为：created → researching → drafting → revising → delivered / closed / abandoned。新增 `closed` 终态。
-- **Closing Summary**：轻量结项产物，`runs/<id>/notes/closing-summary.md`。含结论摘要、不投递原因、派生线索。
-- **Derived Idea / 子课题**：run 过程中派生的新研究点，记录在 `runs/<id>/notes/derived-ideas.md`。含标题、描述、与母课题关系、`child_run`（启动后回填）。子课题完成后结论可回填母 run 或由母 run 链接。未被处理的派生 idea 在扫描对齐时汇总呈报。
+- **Closing Summary**：一个 run 结项时的总结产物，`runs/<id>/notes/closing-summary.md`。含结论摘要、不投递原因、后续方向建议。典型场景：子课题完成后，将结论回填到母 run 时，closing-summary 是回填内容的来源。方向是**子→母**。
+- **Derived Idea**：母课题 run 过程中派生出的新研究点，记录在 `runs/<id>/notes/derived-ideas.md`。含标题、描述、与母课题关系、`child_run`（子课题启动后回填）。方向是**母→子**——母 run 记录"我派生了哪些子课题"。未被处理的派生 idea 在扫描对齐时汇总呈报。
 - **SOP 三件套**：`sop/workflow.md`、`sop/flow-card.md`、`sop/templates.md`。本 feature 修订其内容但不改变其角色定位。
 
 ## Success Criteria *(mandatory)*
@@ -161,4 +165,15 @@
 - **SOP backlog 全量修订**：10 条 backlog 在本 feature 中全部处理，不分批。这些都是模板/流程文本层面的修改，工作量可控。
 - **向后兼容**：所有改动不影响 MVP 已完成的 run（ai-trust-layer、local-embedding-gpu-deploy）。旧 run 目录保持原样，新机制仅适用于新 run。
 - **queue 目录结构扩展**：新增 `queue/closed/<quarter>.json`，与现有 `queue/done/` 和 `queue/abandoned/` 并列。
-- **扫描对齐扩展**：原有四象限分类（可跑 / awaiting ingest / previously abandoned / 过滤）增加两个分类："已结项（未投递）"和"派生 idea"。
+- **扫描对齐扩展**：原有四象限分类扩展为六类，完整分类表如下：
+
+  | 来源 | idea/run 状态 | 分类 | runner 行为 |
+  |---|---|---|---|
+  | Wiki 池 | wiki status=pending, 无本地记录 | 可跑 | 列入候选 |
+  | Wiki 池 | wiki status=pending, 本地有 done 记录 | 已投递、wiki 未消化 | 标 awaiting ingest |
+  | Wiki 池 | wiki status=pending, 本地有 abandoned 记录 | 之前放弃过 | 标 previously abandoned，需用户确认 |
+  | Wiki 池 | wiki status=done/abandoned | 不关 runner 的事 | 过滤，不呈报 |
+  | 本地池 | 无对应 run | 可跑（本地） | 列入候选，标来源=本地 |
+  | 本地池 | 有 done/closed/abandoned 记录 | 已处理 | 按终态分类呈报 |
+  | 任意 run | 有未处理的 derived-ideas.md 条目 | 派生 idea | 单独分类列出，标来源 run |
+  | 任意 run | closed 终态 | 已结项（未投递） | 单独分类列出 |

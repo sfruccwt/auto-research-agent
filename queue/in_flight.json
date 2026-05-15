@@ -1,11 +1,47 @@
 {
+  "version": 1,
   "items": [
     {
       "current_gate": "opening",
       "started": "2026-05-05T16:39:27+08:00",
       "run_id": "2026-04-29-ai-trust-layer",
       "idea_slug": "2026-04-29-ai-trust-layer"
+    },
+    {
+      "started": "2026-05-12T18:59:32+08:00",
+      "run_id": "2026-05-12-beijing-rent-checklist-2",
+      "idea_slug": "2026-05-12-beijing-rent-checklist-2",
+      "current_gate": "opening"
+    },
+    {
+      "idea_slug": "2026-05-13-speech-to-text-dev-plan",
+      "started": "2026-05-13T14:26:40+08:00",
+      "run_id": "2026-05-13-speech-to-text-dev-plan",
+      "current_gate": "done"
+    },
+    {
+      "run_id": "2026-05-13-embedding-api-migration-siliconflow",
+      "idea_slug": "2026-05-13-embedding-api-migration-siliconflow",
+      "started": "2026-05-13T15:29:34+08:00",
+      "current_gate": "opening"
+    },
+    {
+      "current_gate": "opening",
+      "started": "2026-05-14T12:42:45+08:00",
+      "idea_slug": "2026-05-14-hook-asset-visibility-fix",
+      "run_id": "2026-05-14-hook-asset-visibility-fix"
+    },
+    {
+      "run_id": "2026-05-15-wave-warp-terminal-comparison",
+      "idea_slug": "2026-05-15-wave-warp-terminal-comparison",
+      "current_gate": "opening",
+      "started": "2026-05-15T11:19:07+08:00"
+    },
+    {
+      "run_id": "2026-05-15-yue-fei-battles-and-northern-expedition",
+      "idea_slug": "2026-05-15-yue-fei-battles-and-northern-expedition",
+      "current_gate": "opening",
+      "started": "2026-05-15T11:21:16+08:00"
     }
-  ],
-  "version": 1
+  ]
 }

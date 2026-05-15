@@ -1,7 +1,7 @@
-$script:QueueRoot = Join-Path $PSScriptRoot '..' 'queue' | Resolve-Path -ErrorAction SilentlyContinue
+$script:QueueRoot = Join-Path (Join-Path $PSScriptRoot '..') 'queue' | Resolve-Path -ErrorAction SilentlyContinue
 
 if (-not $script:QueueRoot) {
-    $script:QueueRoot = Join-Path $PSScriptRoot '..' 'queue'
+    $script:QueueRoot = Join-Path (Join-Path $PSScriptRoot '..') 'queue'
 }
 
 function Get-CurrentQuarter {
@@ -99,7 +99,7 @@ function Remove-QueueInFlight {
 function Add-QueueDone {
     param([hashtable]$Item)
     $quarter = Get-CurrentQuarter
-    $path = Join-Path $script:QueueRoot 'done' "$quarter.json"
+    $path = Join-Path (Join-Path $script:QueueRoot 'done') "$quarter.json"
     $data = Read-JsonFile $path
     $items = [System.Collections.ArrayList]::new()
     foreach ($existing in $data.items) { [void]$items.Add($existing) }
@@ -111,11 +111,91 @@ function Add-QueueDone {
 function Add-QueueAbandoned {
     param([hashtable]$Item)
     $quarter = Get-CurrentQuarter
-    $path = Join-Path $script:QueueRoot 'abandoned' "$quarter.json"
+    $path = Join-Path (Join-Path $script:QueueRoot 'abandoned') "$quarter.json"
     $data = Read-JsonFile $path
     $items = [System.Collections.ArrayList]::new()
     foreach ($existing in $data.items) { [void]$items.Add($existing) }
     [void]$items.Add([PSCustomObject]$Item)
     $data = @{ version = 1; items = $items }
     Write-JsonFile -Path $path -Data $data
+}
+
+function Add-QueueClosed {
+    param([hashtable]$Item)
+    $quarter = Get-CurrentQuarter
+    $path = Join-Path (Join-Path $script:QueueRoot 'closed') "$quarter.json"
+    $data = Read-JsonFile $path
+    $items = [System.Collections.ArrayList]::new()
+    foreach ($existing in $data.items) { [void]$items.Add($existing) }
+    [void]$items.Add([PSCustomObject]$Item)
+    $data = @{ version = 1; items = $items }
+    Write-JsonFile -Path $path -Data $data
+}
+
+function Get-QueueClosed {
+    param([string]$Quarter)
+    $closedDir = Join-Path $script:QueueRoot 'closed'
+    if (-not (Test-Path $closedDir)) { return @() }
+    if ($Quarter) {
+        $path = Join-Path $closedDir "$Quarter.json"
+        $data = Read-JsonFile $path
+        return @($data.items)
+    }
+    $allItems = [System.Collections.ArrayList]::new()
+    Get-ChildItem $closedDir -Filter '*.json' | ForEach-Object {
+        $data = Read-JsonFile $_.FullName
+        foreach ($item in $data.items) { [void]$allItems.Add($item) }
+    }
+    return @($allItems)
+}
+
+function Update-QueueGate {
+    param(
+        [Parameter(Mandatory)][string]$RunId,
+        [Parameter(Mandatory)][string]$Gate
+    )
+    $path = Join-Path $script:QueueRoot 'in_flight.json'
+    $data = Read-JsonFile $path
+    $found = $false
+    $items = [System.Collections.ArrayList]::new()
+    foreach ($item in $data.items) {
+        if ($item.run_id -eq $RunId) {
+            $found = $true
+            $item.current_gate = $Gate
+        }
+        [void]$items.Add($item)
+    }
+    if (-not $found) {
+        Write-Error "RunId '$RunId' not found in in_flight queue"
+        exit 1
+    }
+    $data = @{ version = 1; items = $items }
+    Write-JsonFile -Path $path -Data $data
+
+    $runsRoot = Join-Path (Join-Path $PSScriptRoot '..') 'runs'
+    $logPath = Join-Path (Join-Path $runsRoot $RunId) 'log.md'
+    if (Test-Path $logPath) {
+        $ts = Get-Date -Format 'yyyy-MM-dd HH:mm'
+        $entry = "$ts | event=gate_updated | gate=$Gate"
+        Add-Content -Path $logPath -Value $entry -Encoding UTF8
+    }
+}
+
+function Remove-QueueClosed {
+    param([string]$RunId)
+    $closedDir = Join-Path $script:QueueRoot 'closed'
+    if (-not (Test-Path $closedDir)) { return }
+    Get-ChildItem $closedDir -Filter '*.json' | ForEach-Object {
+        $data = Read-JsonFile $_.FullName
+        $filtered = [System.Collections.ArrayList]::new()
+        $changed = $false
+        foreach ($item in $data.items) {
+            if ($item.run_id -eq $RunId) { $changed = $true }
+            else { [void]$filtered.Add($item) }
+        }
+        if ($changed) {
+            $data = @{ version = 1; items = $filtered }
+            Write-JsonFile -Path $_.FullName -Data $data
+        }
+    }
 }

@@ -7,7 +7,7 @@ param(
 
 . "$PSScriptRoot/queue.ps1"
 
-$runsRoot = Join-Path $PSScriptRoot '..' 'runs'
+$runsRoot = Join-Path (Join-Path $PSScriptRoot '..') 'runs'
 $runDir = Join-Path $runsRoot $RunId
 $outputPath = Join-Path $runDir 'output.md'
 
@@ -83,6 +83,9 @@ Add-QueueDone -Item @{
 
 # Step 7: Remove from in_flight
 Remove-QueueInFlight -RunId $RunId
+
+# Step 7a: Remove from closed if present (closed → delivered migration)
+Remove-QueueClosed -RunId $RunId
 
 # Step 8: Append to log.md
 $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm'
