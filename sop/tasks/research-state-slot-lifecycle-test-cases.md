@@ -1,8 +1,9 @@
 # 测试方案：Research state / slot lifecycle
 
-状态：已准备（文档层测试方案）
+状态：已准备（文档层测试方案；PR 临时自动测试已执行）
 对应任务：`sop/tasks/research-state-slot-lifecycle.md`
 迁移计划：`sop/tasks/research-state-slot-lifecycle-migration-plan.md`
+临时自动测试：`scripts/test/research-state-slot-lifecycle.ps1`（PR review 用；如不希望测试资产进入 `main`，merge 前撤回本临时测试提交）
 创建时间：2026-06-01
 最近更新：2026-06-01
 
@@ -14,6 +15,14 @@
 - 旧字段覆盖核对。
 - gate 重绑定检查。
 - 场景化用例。
+
+PR review 临时自动检查脚本：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test\research-state-slot-lifecycle.ps1
+```
+
+如果最终 merge 不保留测试资产，需要在 merge 前撤回添加该脚本和 `sop/tasks/fixtures/research-state-slot-lifecycle/` 的临时测试提交。
 
 不把历史 run 回放作为本次验收项。历史 run 已有定论，倒推新流程容易变形，价值不如新场景测试。
 
@@ -128,7 +137,23 @@
 
 ### 前置状态约定
 
-本 PR 不提交固定测试文件或自动测试脚本。后续执行 C5、C6、C9 这类依赖前置状态的用例时，临时准备最小输入文件，原则是只放触发该分支所需的状态，不构造完整研究样本。
+本 PR 分支临时提交了最小测试文件，供 review 和本轮验证使用。后续如果不希望测试资产进入 `main`，在 merge 前撤回临时测试提交即可。
+
+当前最小测试文件：
+
+```text
+sop/tasks/fixtures/research-state-slot-lifecycle/
+  c5-pivot-after-round-1/
+    research-state-before.md
+    search-round-1.md
+  c6-enough-after-round-2/
+    research-state-r02.md
+    search-round-2.md
+  c9-legacy-run-resume/
+    task-card.md
+    judgment.md
+    memo.md
+```
 
 ### C1. Searchable missing
 
