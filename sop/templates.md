@@ -1,14 +1,16 @@
-# 研究模板索引 v0.7
+# 研究模板索引 v0.8
 
 每个模板已拆为独立文件，按需读取。
 
 | 模板 | 文件 | 用途 |
 |---|---|---|
-| 研究任务卡 | `sop/template-task-card.md` | 开题门：把主题压成决策问题，列出待比较路径 |
-| 判断单 | `sop/template-judgment.md` | 中途门：第一轮地图 → 当前判断 → 最短证据链 → 待证点 |
-| 决策导向备忘录 | `sop/template-memo.md` | 收尾门：路径分流 → 动作上限 → 下一步 → 观察信号 → 推翻条件 |
-| 资产配置附加槽位 | `sop/template-investment-addon.md` | 按需启用：资产/投资类主题的额外约束 |
+| Research state | `sop/template-research-state.md` | 新 active 模板：当前研究状态、slot、派生项、历史快照 |
+| Search round | `sop/template-search-round.md` | 新 active 模板：每轮搜索、证据、state delta、enoughness 初判 |
+| 决策导向备忘录 | `sop/template-memo.md` | output 前最终 review：enoughness、action boundary、路径分流 |
 | Output 投递模板 | `sop/template-output.md` | 投递到 wiki inbox 的 frontmatter + 写作规范 |
+| 资产配置附加槽位 | `sop/template-investment-addon.md` | 按需启用：资产/投资类主题的额外约束 |
+| Legacy 研究任务卡 | `sop/template-task-card.md` | 仅用于旧 run legacy import；新 run 不再生成 |
+| Legacy 判断单 | `sop/template-judgment.md` | 仅用于旧 run legacy import；新 run 不再生成 |
 
 ## 来源引用格式（全模板通用）
 
@@ -18,7 +20,7 @@
 - 文末来源列表按编号排序，每条之间空一行
 - URL 显式写出，不用 markdown 超链接
 
-```
+```text
 [1] 作者/机构. "标题." 年份.
     URL: example.com/path
 
@@ -26,20 +28,16 @@
     URL: example.com/path
 ```
 
-适用于：notes/（task-card、judgment、memo）、sources/（search-round）、output.md。
+适用于：`notes/research-state.md`、`notes/memo.md`、`sources/search-round-N.md`、`output.md`。
 
 ---
 
 ## 版本说明
 
-v0.7 设计意图：
-- 模板 1：把主题压成决策问题，并显式列出待比较路径
-- 模板 2：把第一轮地图压成当前判断、当前主路径、最短证据链与待证点
-- 模板 3：把最终结果压到路径分流、动作上限、下一步、观察信号与推翻条件
+v0.8 设计意图：
 
-v0.6 → v0.7 变更：
-1. 模板 1 补入 `当前待比较路径 / 候选动作`
-2. 模板 2 第一轮地图补入 `现实摩擦 / 动作条件`
-3. 模板 2 当前判断补入 `当前最值得继续看的路径`
-4. 模板 2 竞争判断补入 `最可能改变路径排序的信息`
-5. 模板 3 `可选路径` 收口为 `路径分流（推进 / 继续比较 / 暂缓 / 放弃）`
+- `research-state.md` 替代新 run 中的 `task-card.md` 和 `judgment.md`。
+- 每轮搜索必须写 `search_round_summary.state_delta`，并更新当前 state。
+- `midway` 不再是新流程 gate；旧 run 中的 `midway` 只作为 legacy gate 值处理。
+- `memo.md` 保留为 output 前的最终 enoughness / action boundary review。
+- `工具分配` 不迁入 slot；默认检索工具规则由 `AGENTS.md` 注入。

@@ -1,177 +1,88 @@
-# 研究能力总流程卡 v0.7
+# 研究能力总流程卡 v0.8
 
-定位：在 `v0.6` 基础上，不再继续做字段同义词微调，而是把主卡更明确地收口到**研究 → 判断 → 动作**。  
-目标：拿到一个主题后，尽快查到能支持干活的东西；避免退化成漂亮但不推动决定的资料整理。
+定位：以 `research-state.md` 作为 run 的当前状态主线，用每轮 `search-round-N.md` 记录证据与 state delta，最后通过 memo 收口到 output。
+目标：拿到一个主题后，围绕真实问题快速建立 state、用搜索更新 state、在证据足够时转成行动。
 
 ---
 
-## 2 道门 + done
+## 1 道门 + memo review + done
 
-| 门 | 标志产物 | 过门动作 |
+| 节点 | 标志产物 | 动作 |
 |---|---|---|
-| **opening** | `notes/task-card.md` | `Update-QueueGate -RunId <id> -Gate opening` |
-| **midway** | `notes/judgment.md` | `Update-QueueGate -RunId <id> -Gate midway` |
+| **opening** | `notes/research-state.md` + `notes/state-history/research-state-opening.md` | `Update-QueueGate -RunId <id> -Gate opening` |
+| **memo review** | `notes/state-history/research-state-pre-memo.md` + `notes/memo.md` | 交用户审阅确认，不是 queue gate |
 | **done** | `output.md` | `Update-QueueGate -RunId <id> -Gate done` |
 
-1. **开题门（opening）：决策问题 + 待比较路径 + 关键词压测**
-   - 这轮到底要支持什么决定？
-   - 当前至少要比较哪几条路径 / 动作？
-   - 明确不回答什么？
-   - 对"要回答的问题"中每个关键词做主语/领域/动作确认
-   - 写完 task-card → 过门
-
-2. **中途门（midway）：motivation 校准 + 子课题拆分兜底 + 判断单**
-   - Motivation 校准：用关键发现反问用户，补充约束（midway 后仍可继续）
-   - 子课题拆分兜底（midway 后仍可继续）
-   - 判断单：当前判断 / 当前最值得继续看的路径 / 最短证据链 / 待证点
-   - 写完 judgment → 过门
-
-3. **完成（done）：补缺 → memo → 用户审阅 → output**
-   - 后续轮次只补关键缺口
-   - memo 收口：动作上限 + 路径分流 + 最小下一步
-   - **memo 交用户审阅确认后才写 output**
-   - 写完 output → 过门
-
-> 记忆口令：**先定决定，再立判断，最后收动作。**
+`midway` 是旧流程 gate。新 run 不再调用 `Update-QueueGate -Gate midway`。
 
 ---
 
-## 四步主干
+## 主线
 
-### 1. 先压题：主题 → 决策问题 → 待比较路径
-- 这次到底要支持什么决定？
-- 交付对象是谁？
-- 当前先比较哪几条路径 / 动作？
-- 这轮最多支持到什么动作上限？
-- 什么明确不回答？
+1. **开题：建初始 state**
+   - 初始化 `notes/research-state.md`。
+   - 保存 `notes/state-history/research-state-opening.md`。
+   - 只要求能安全进入第一轮搜索，不要求所有 slot 都 confirmed。
 
-**不开题门，不开搜。**
+2. **搜索：每轮更新 state**
+   - 写 `sources/search-round-N.md`。
+   - 在 `search_round_summary.state_delta` 说明本轮改变了什么。
+   - 更新 `notes/research-state.md`。
+   - 保存 `notes/state-history/research-state-rNN.md`。
+   - 给出 `continue_search / pivot / ask_user / write_memo / stop` 建议。
 
----
+3. **收口：pre-memo state → memo**
+   - 当建议进入 memo 且用户确认后，保存 `research-state-pre-memo.md`。
+   - 写 `notes/memo.md`，确认 enoughness 和 action boundary。
+   - memo 经用户审阅后才写 output。
 
-### 2. 先定检索面：谁负责找现实约束，谁负责补证
-先分 4 个检索面：
-- 官方 / 原始
-- 市场 / 新闻
-- 学术
-- 社区 / 案例
+4. **完成：output**
+   - output 面向读者，结论先行。
+   - 不展示过程 state。
+   - 写完后过 done。
 
-再给每一面分角色：
-- 哪些面负责第一轮建图
-- 哪些面负责找现实摩擦 / 原始规则 / 动作条件
-- 哪些面只在第二轮补关键缺口时开启
-- 哪些面只能当线索，不能直接支撑判断
-
-> 要点：先设计检索面，再搜索；AI 摘要只能做入口，不能代替证据压缩。
+> 记忆口令：**先建 state；搜索后更新 state；memo 前确认 enoughness；output 只写最终稿。**
 
 ---
 
-### 3. 第一轮先建图，再过中途门
-第一轮只拉开问题空间：
-- 关键变量
-- 主要路径
-- 关键约束
-- 现实摩擦 / 动作条件
-- 显著分歧
-- 当前未知
+## 每轮搜索快检
 
-然后**立刻**写判断单，至少写清：
-- 当前判断
-- 当前最值得继续看的路径
-- 最短证据链
-- 首个不可信信息跳点
-- 待证点 / 竞争判断
+1. 这轮搜索回应了哪个 state gap？
+2. 本轮发现改变了哪个 slot / facet？
+3. 哪些值从 `temporary` 变成 `confirmed`，哪些仍是 `unresolved`？
+4. 当前证据足够支持什么，不足以支持什么？
+5. 下一步应该 continue、pivot、ask_user、write_memo，还是 stop？
 
-**没写判断单，不进入第二轮。**
+任一答不清，就不要进入下一轮或 memo。
 
 ---
 
-### 4. 后续轮次只补关键缺口，最后收口到 done
-后续轮次只补会改变路径排序或动作选择的缺口：
-- 一手 / 高信任来源
-- 真正会改变路径比较结果的关键变量
-- 能确认或打掉竞争判断的证据
-- 机制 / 文献 / 方法层面的必要补证（按需开启学术支路）
+## 用户阻塞点
 
-最后按证据上限收口，必须写清：
-- 当前判断
-- 当前判断的最短证据链
-- 当前建议分流：推进 / 继续比较 / 暂缓 / 放弃
-- 当前证据可支持到的动作上限
-- 现在最值得做的最小下一步
-- 暂不动作
-- 观察信号 / 推翻条件
+以下情况必须暂停给用户确认：
 
-**写不出动作上限或建议分流，就还没收口。**
-
-**memo 写完后必须交用户审阅确认，然后才能开始写 output。不得在同一轮动作中连续产出 memo 和 output。**
+- `agent_recommendation = pivot`
+- `agent_recommendation = write_memo`
+- `agent_recommendation = stop`
+- `action_boundary` 扩张
+- high-impact + user-only 缺口
+- 两个 scope 会导向不同 output
 
 ---
 
-## 7 问快检
+## Legacy 兼容
 
-### 开题前
-1. 我这轮到底支持什么决定？
-2. 当前至少在比较哪几条路径？
+旧 run 可能已有：
 
-### 第一轮后
-3. 我现在的判断是什么？
-4. 目前最值得继续看的路径是哪条？
-5. 证据链是否扣紧（每条来源说明了什么、为什么支撑结论）？
+- `notes/task-card.md`
+- `notes/judgment.md`
+- `current_gate = midway`
 
-### 收尾前
-6. 现有证据最多支持到什么动作上限？
-7. 当前更该推进 / 继续比较 / 暂缓 / 放弃哪条路径，为什么？
+恢复旧 run 时，不批量迁移。若没有 `notes/research-state.md`，按需从旧文件做 legacy import，生成：
 
-任一答不清，就先别把结果当成可交付研究。
+```text
+notes/research-state.md
+notes/state-history/research-state-legacy-import.md
+```
 
----
-
-## 一句话版
-
-> 先把主题压成决策问题和待比较路径，先分检索面并抓现实约束；第一轮建图后立刻写判断单；第二轮只补会改变路径排序的缺口，最后按证据上限收口到建议分流和最小下一步。
-
----
-
-## 对“个人资产配置 / 投资 / 资产增值”类主题的默认收紧
-
-默认额外补 6 个现实约束槽位：
-- 期限
-- 风险承受
-- 流动性要求
-- 资金规模 / 账户条件
-- 税务 / 地域限制
-- 当前不能越过的动作上限
-
-这能强制输出更像：
-- 判断框架
-- 路径比较
-- 执行线索
-- 分流结论
-
-而不是：
-- 资料摘抄
-- 泛化综述
-- 无约束的高置信建议
-
----
-
-## 当前特别约束
-
-- 当前只做 A 阶段，不进入 B 阶段真实演练
-- 不扩成大而全知识管理框架
-- 不把 `vault-research` 一类编排资产升级成工程建设任务
-- AI 摘要只能做入口，不能替代证据压缩
-- 学术支路只按需开启，不升格为默认主干
-
----
-
-## 本版依据
-
-- `research-capability-flow-card-v0.6.md`
-- `research-capability-asset-layering-v0.2.md`
-- `research-capability-static-review-batch1-2026-03-13.md`
-- `research-capability-static-review-batch2-2026-03-13.md`
-- `status/research-capability.md`
-
-> 说明：v0.7 不新增外部事实；只把首批候选静态审读已经支持的“研究 → 判断 → 动作”闭环更明确地写回主卡。
+导入值的 `basis` 使用 `legacy_doc`，不得自动标成用户刚刚确认。
