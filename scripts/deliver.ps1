@@ -5,6 +5,8 @@ param(
     [string]$WikiRoot = 'D:/Personal LLM Wiki'
 )
 
+$ErrorActionPreference = 'Stop'
+
 . "$PSScriptRoot/queue.ps1"
 
 $runsRoot = Join-Path (Join-Path $PSScriptRoot '..') 'runs'
@@ -42,16 +44,17 @@ if ($missing) {
 }
 
 # Step 3: Compute target path
-$inboxDir = Join-Path $WikiRoot 'sources' 'notes' 'inbox'
+$inboxDir = Join-Path (Join-Path (Join-Path $WikiRoot 'sources') 'notes') 'inbox'
 if (-not (Test-Path $inboxDir)) {
     Write-Error "Wiki inbox directory does not exist: $inboxDir"
     exit 3
 }
 
 $captured = $frontmatter['captured']
-# Derive slug from RunId (strip date prefix if present)
-$slug = $RunId
-if ($RunId -match '^\d{4}-\d{2}-\d{2}-(.+)$') {
+# Derive filename slug from the run id leaf. Child run ids contain path
+# separators, but inbox targets must be a single markdown filename.
+$slug = ($RunId -split '[\\/]')[-1]
+if ($slug -match '^\d{4}-\d{2}-\d{2}-(.+)$') {
     $slug = $Matches[1]
 }
 $targetName = "$captured-$slug.md"
