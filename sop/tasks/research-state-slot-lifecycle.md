@@ -4,7 +4,6 @@
 来源：`runs/2026-05-24-llm-web-search-principles-auto-research-optimization/sub/research-agent-sop-design-patterns/notes/slot-hierarchy-and-lifecycle.md`
 迁移计划：`sop/tasks/research-state-slot-lifecycle-migration-plan.md`
 配套测试：`sop/tasks/research-state-slot-lifecycle-test-cases.md`
-临时自动测试：`scripts/test/research-state-slot-lifecycle.ps1`（PR review 用；如不希望测试资产进入 `main`，merge 前撤回本临时测试提交）
 创建时间：2026-06-01
 最近更新：2026-06-01
 
@@ -278,7 +277,6 @@ update_reason: ""
 - 旧字段覆盖核对。
 - gate 重绑定检查。
 - 场景化用例设计。
-- PR 临时自动测试脚本检查。
 
 验收点：
 
