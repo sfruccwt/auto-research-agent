@@ -8,7 +8,7 @@
 - `sop/stages/0-global.md` 解释搜索工具选择，并规定 `agent-reach` 的使用方式。
 - `sop/stages/2-research.md` 规定 `research-state.md` 只记录来源面和搜索意图，不记录工具路由。
 - `sop/template-search-round.md` 记录每轮搜索的查询、来源和发现，但当前没有单独记录“检索通道”。
-- `scripts/test/research-state-slot-lifecycle.ps1` 目前断言 `agent-reach` 仍是全局路由规则。
+- 文档层静态检查需要覆盖当前双轨路由规则，避免回退到 `agent-reach` 单线表述。
 
 已实测 Chrome extension backend 能复用用户 Chrome profile 的登录态。即使用户关闭原有知乎/小红书 tab，runner 新开 Chrome extension tab 仍可使用已登录状态进入站内搜索，并读取搜索结果列表。
 
@@ -206,24 +206,23 @@ codex/browser-search-route
 - 默认检索规则仍由 `AGENTS.md` 负责。
 - 新规则是强制 `agent-reach` 主线 + browser search 辅助 lane。
 
-### 2.10 `scripts/test/research-state-slot-lifecycle.ps1`
+### 2.10 静态文档检查
 
-更新断言：
+检查项：
 
-- 保留 `Assert-NotContains $StateTemplate "tool_routing"`。
-- 把 `agent-reach remains global routing rule` 改成检查：
-  - task doc 仍说明不把工具路由放进 `research-state`。
-  - task doc 包含 `agent-reach`。
-  - task doc 包含 `browser search` 或 `browser-search`。
-  - `AGENTS.md` 包含强制双轨规则。
-  - `CLAUDE.md` 包含强制双轨规则。
-  - `AGENTS.md` / `CLAUDE.md` 仍保留“检索子 agent 不调用 `new-run.ps1`，直接返回搜索结果”的 run 边界。
-  - `sop/stages/0-global.md` 包含 `browser-search lane`。
-  - `sop/stages/0-global.md` 明确 browser search lane 是强制动作。
-  - `sop/stages/0-global.md` 明确整条 browser lane fallback 只限 Chrome/browser backend 损坏或不可用。
-  - `sop/template-search-round.md` 包含 `检索通道`。
-  - `sop/template-search-round.md` 包含 `browser:google`、`browser:bing`、`browser:site-search`、`browser:skipped`。
-  - `sop/template-search-round.md` 保留 `source_notes`，用于记录登录态、个性化或站点风控限制。
+- `research-state` 模板仍不包含 `tool_routing`。
+- lifecycle task doc 仍说明不把工具路由放进 `research-state`。
+- task doc 包含 `agent-reach`。
+- task doc 包含 `browser search` 或 `browser-search`。
+- `AGENTS.md` 包含强制双轨规则。
+- `CLAUDE.md` 包含强制双轨规则。
+- `AGENTS.md` / `CLAUDE.md` 仍保留“检索子 agent 不调用 `new-run.ps1`，直接返回搜索结果”的 run 边界。
+- `sop/stages/0-global.md` 包含 `browser-search lane`。
+- `sop/stages/0-global.md` 明确 browser search lane 是强制动作。
+- `sop/stages/0-global.md` 明确整条 browser lane fallback 只限 Chrome/browser backend 损坏或不可用。
+- `sop/template-search-round.md` 包含 `检索通道`。
+- `sop/template-search-round.md` 包含 `browser:google`、`browser:bing`、`browser:site-search`、`browser:skipped`。
+- `sop/template-search-round.md` 保留 `source_notes`，用于记录登录态、个性化或站点风控限制。
 
 ### 2.11 `sop/backlog.md`
 
@@ -234,12 +233,12 @@ codex/browser-search-route
 
 ## 3. 测试方案
 
-### 3.1 自动化文档测试
+### 3.1 静态文档检查
 
 实施后运行：
 
 ```powershell
-pwsh -NoProfile -ExecutionPolicy Bypass -File .\scripts\test\research-state-slot-lifecycle.ps1
+rg -n "browser-search|browser search|检索通道|agent-reach" AGENTS.md CLAUDE.md sop
 ```
 
 验收点：
