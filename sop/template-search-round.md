@@ -10,12 +10,24 @@
 
 ## queries_and_sources
 
-| 来源面 | 查询 / 入口 | 来源 | 备注 |
-|---|---|---|---|
-| official_or_primary |  |  |  |
-| market_or_news |  |  |  |
-| academic |  |  |  |
-| community_or_cases |  |  |  |
+| 来源面 | 检索通道 | 查询 / 入口 | 来源 | 备注 |
+|---|---|---|---|---|
+| official_or_primary | agent-reach:web / browser:google / browser:bing |  |  |  |
+| market_or_news | agent-reach:search / agent-reach:web / browser:google / browser:bing |  |  |  |
+| academic | agent-reach:web / browser:google / browser:bing |  |  |  |
+| community_or_cases | agent-reach:social / agent-reach:dev / browser:site-search / browser:google / browser:bing |  |  |  |
+
+检索通道可用值：
+
+- `agent-reach:search`
+- `agent-reach:web`
+- `agent-reach:social`
+- `agent-reach:dev`
+- `agent-reach:video`
+- `browser:google`
+- `browser:bing`
+- `browser:site-search`
+- `browser:skipped`
 
 ## key_findings
 
@@ -28,6 +40,8 @@
 | 来源 | 说明了什么 | 来源层级 | 对当前判断的作用 |
 |---|---|---|---|
 |  |  | official / primary / market / academic / community |  |
+
+> 如 browser lane 使用登录态、个性化结果、站内搜索，或遇到站点风控 / App 扫码 / 授权缺失，必须在这里记录。
 
 ## search_round_summary
 

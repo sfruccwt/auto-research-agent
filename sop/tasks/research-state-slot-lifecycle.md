@@ -125,7 +125,7 @@ update_reason: ""
 - 覆盖旧 `task-card.md` 和 `judgment.md` 的有效信息，但不为旧模板新增专门字段。
 - 不要求每个 facet 都填写 resolution metadata。
 - 能生成 opening、round、pre-memo 三类快照。
-- 不新增 `search_plan.tool_routing`。默认检索工具规则由 `AGENTS.md` 注入：所有检索加载并使用 `agent-reach`；slot 只记录要开的来源面和搜索意图。
+- 不新增 `search_plan.tool_routing`。强制双轨检索规则由 `AGENTS.md` 注入：所有检索同时使用 `agent-reach lane` 和 `browser-search lane`；slot 只记录要开的来源面和搜索意图。
 
 ### T2. 新增 `sop/template-search-round.md`
 
