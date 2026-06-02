@@ -5,7 +5,7 @@
 | 模板 | 文件 | 用途 |
 |---|---|---|
 | Research state | `sop/template-research-state.md` | 新 active 模板：当前研究状态、slot、派生项、历史快照 |
-| Search round | `sop/template-search-round.md` | 新 active 模板：每轮搜索、证据、state delta、enoughness 初判 |
+| Search round | `sop/template-search-round.md` | 新 active 模板：每轮搜索证据、state delta、enoughness 初判 |
 | 决策导向备忘录 | `sop/template-memo.md` | output 前最终 review：enoughness、action boundary、路径分流 |
 | Output 投递模板 | `sop/template-output.md` | 投递到 wiki inbox 的 frontmatter + 写作规范 |
 | 资产配置附加槽位 | `sop/template-investment-addon.md` | 按需启用：资产/投资类主题的额外约束 |
@@ -40,4 +40,4 @@ v0.8 设计意图：
 - 每轮搜索必须写 `search_round_summary.state_delta`，并更新当前 state。
 - `midway` 不再是新流程 gate；旧 run 中的 `midway` 只作为 legacy gate 值处理。
 - `memo.md` 保留为 output 前的最终 enoughness / action boundary review。
-- `工具分配` 不迁入 slot；默认检索工具规则由 `AGENTS.md` 注入。
+- `工具分配` 不迁入 slot；强制双轨和检索子 agent 隔离规则由 `AGENTS.md` 注入。

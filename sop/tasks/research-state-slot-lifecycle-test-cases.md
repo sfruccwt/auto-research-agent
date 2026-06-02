@@ -79,7 +79,7 @@
 | `输出模式` | `output_action_contract.product_shape` | 能决定最终产物形态 |
 | `明确不回答什么` | `scope_boundary.out_of_scope` | 能约束范围 |
 | `优先开的检索面` | `search_plan.source_surfaces` | 能生成第一轮搜索面 |
-| `工具分配` | 不迁入 slot | 默认工具规则已由 `AGENTS.md` 注入；slot 只记录来源面和搜索意图 |
+| `工具分配` | 不迁入 slot | 强制双轨检索规则已由 `AGENTS.md` 注入；slot 只记录来源面和搜索意图 |
 | `本轮动作上限` | `scope_boundary.action_boundary` | 能避免研究越界实施 |
 | `本轮收尾门槛` | `enoughness.stop_criteria` | 能判断何时够用 |
 | `用户解读 / 感想` | `origin_context.user_feedback` / `change_log` | 能保留用户补充 |
@@ -102,7 +102,7 @@
 
 - 每个旧字段都能被现有结构覆盖。
 - 没有为旧模板新增 `midway_review` 或其他判断单副本字段。
-- `工具分配` 不迁入 slot；默认检索工具规则继续由 `AGENTS.md` 负责。
+- `工具分配` 不迁入 slot；强制双轨检索规则继续由 `AGENTS.md` 负责，当前规则是 `agent-reach lane` + `browser-search lane`。
 
 ## L3. Gate 重绑定检查
 
