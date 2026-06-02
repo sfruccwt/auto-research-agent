@@ -2,7 +2,12 @@
 
 ## 待改进
 
-（当前无待改进项）
+- [x] Research state / slot lifecycle 接入 SOP（2026-06-01，文档层已实施）
+  - 目标：把 slot 从 opening clarification 字段升级为贯穿 run 的 `research-state.md`，并让每轮搜索产生 `search_round_summary.state_delta`。
+  - 任务文档：`sop/tasks/research-state-slot-lifecycle.md`
+  - 迁移计划：`sop/tasks/research-state-slot-lifecycle-migration-plan.md`
+  - 测试方案：`sop/tasks/research-state-slot-lifecycle-test-cases.md`
+  - 来源 run：`runs/2026-05-24-llm-web-search-principles-auto-research-optimization/sub/research-agent-sop-design-patterns/`
 
 ## 已改进
 

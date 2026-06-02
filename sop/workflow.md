@@ -1,4 +1,4 @@
-# 研究工作流 v0.3（索引版）
+# 研究工作流 v0.8（索引版）
 
 > 目标：围绕一个真实问题，研究到足够支持行动、判断或项目推进；不把研究变成无止境的信息囤积。
 > 定位：这是主版本。学术研究方法只作为参考来源，不再作为主线模板。
@@ -12,34 +12,51 @@
 | 文件 | 内容 | 何时读 |
 |---|---|---|
 | `stages/0-global.md` | 全阶段通用规则（来源标注、搜索工具、概念确认制） | 每次过门都重读 |
-| `stages/1-opening.md` | 开题：定义问题 + 关键词压测 + 开题门检查 | run 启动时 |
-| `stages/2-research.md` | 搜索、判断与收尾：检索面设计 → 建图 → 判断 → 补缺 → memo → output | opening 门通过后 |
+| `stages/1-opening.md` | 开题：初始化 `research-state.md` + opening 快照 | run 启动时 |
+| `stages/2-research.md` | 搜索、状态更新与收尾：search round → state delta → memo → output | opening 门通过后 |
+
+---
+
+## Active artifacts
+
+| 文件 | 作用 |
+|---|---|
+| `notes/research-state.md` | 当前最新研究状态，继续 run 时优先读取 |
+| `notes/state-history/*.md` | 不可变历史快照，用于复盘和测试 |
+| `sources/search-round-N.md` | 每轮搜索、证据、`state_delta`、阶段性 enoughness |
+| `notes/memo.md` | output 前最终 review，确认 enoughness 和 action boundary |
+| `output.md` | 面向读者的最终投递物 |
+
+新 run 不再生成 `notes/task-card.md` 和 `notes/judgment.md`。
 
 ---
 
 ## 口令版
 
-> 先把问题写清楚；
-> 再宽搜建立全貌；
-> 拆主流观点的逻辑与支撑；
-> 主动找反对意见并验证；
-> 形成综合判断；
-> 最后转成行动，并让事实来检验。
+> 先建 state；
+> 每轮搜索后更新 state；
+> 只补会改变 state / 路径排序 / action boundary 的缺口；
+> memo 前确认 enoughness；
+> output 只写最终稿。
 
 ---
 
 ## 两个核心抓手
 
 ### A. Motivation
+
 问任何信息、任何观点，先问：
+
 - 它为什么值得研究？
 - 它为什么值得我看？
 - 它到底在回应什么问题？
 
-不管学术还是现实，Motivation 都是在帮你判断：这个问题值不值得继续投入。
+Motivation 写回 `origin_context.user_feedback` 或 `change_log`，不是另开阶段文档。
 
 ### B. Insight
+
 再问：
+
 - 它真正说出了什么？
 - 它提供了什么关键洞察？
 - 它到底解释了什么？
@@ -53,45 +70,49 @@
 默认流程是：先粗读 → 再筛选 → 只把值得的拿去细读。
 
 优先细读：
+
 - Motivation 很强的
 - Insight 很强的
-- 对当前任务验收标准帮助很直接的
+- 对当前 `enoughness.stop_criteria` 帮助很直接的
 - 能给出更好解释框架的
 
-如果只是知道它"在干什么"就够了，那粗读即可。
+如果只是知道它“在干什么”就够了，那粗读即可。
 
 ---
 
 ## 因果推断意识
 
 当前不把学术型计量细节当主线，但必须保留这些习惯：
-- 不要太快把相关性当因果性
-- 问清楚：真正变化的是哪个变量？
-- 问清楚：还有哪些关键因素没控制？
-- 问清楚：对比对象到底是什么？
-- 问清楚：当前结论依赖哪些前提？
 
-即使拿不到完美数据，也可以让判断更接近"标准因果推断的精神"：尽量比较、尽量控制、尽量暴露前提、尽量承认不确定性。
+- 不要太快把相关性当因果性。
+- 问清楚真正变化的是哪个变量。
+- 问清楚还有哪些关键因素没控制。
+- 问清楚对比对象到底是什么。
+- 问清楚当前结论依赖哪些前提。
 
 ---
 
-## 学术研究可以借什么，不借什么
+## 恢复中断 run
 
-### 可以借
-- Motivation / Insight 的抽取习惯
-- 节点文献法建立领域地图
-- 因果推断意识
-- 粗读 → 筛选 → 细读的节奏
+恢复 run 时：
 
-### 不作为主线照搬
-- 论文式实证流程本身
-- 细碎的指标构造工艺
-- 以发表为导向的边际文献增量
+1. 读 `runs/<run-id>/idea.md`。
+2. 读 `runs/<run-id>/log.md`。
+3. 优先读 `runs/<run-id>/notes/research-state.md`。
+4. 按需读 `runs/<run-id>/notes/state-history/`。
+5. 读最新 `sources/search-round-N.md`，检查它是否和当前 state 一致。
 
-> 学术研究是参考来源，不是主模板。
+如果旧 run 没有 `notes/research-state.md`，但有 `notes/task-card.md`、`notes/judgment.md` 或 `notes/memo.md`，先做 legacy import：
+
+```text
+notes/research-state.md
+notes/state-history/research-state-legacy-import.md
+```
+
+旧 run 的 `current_gate = midway` 只视为 legacy 阶段标记；新流程不继续推进 midway gate。
 
 ---
 
 ## 一句话总结
 
-> 研究的目标不是把资料查全，而是围绕一个真实问题，快速建立全貌，拆主流观点与反对意见，形成当前最可信的判断，再转成行动，并让事实来检验。
+> 研究的目标不是把资料查全，而是围绕一个真实问题维护一份当前 state，让每轮搜索改变它、解释它，最后在 enoughness 足够时转成 memo 和 output。
