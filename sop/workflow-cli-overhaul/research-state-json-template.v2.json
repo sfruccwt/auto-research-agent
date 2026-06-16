@@ -1,0 +1,282 @@
+{
+  "_template": {
+    "name": "research-state-json-template.v2",
+    "language": "zh-CN",
+    "status": "draft",
+    "purpose": "作为 notes/research-state.json 的候选模板。opening 和 search round 共用同一份 state；差别只在 review brief 渲染字段不同。",
+    "fill_rules": [
+      "用户原话只写入 origin_context.original_user_words，不在其他字段伪装成用户确认。",
+      "unknown 表示未知；n/a 表示不适用；deferred 表示知道缺口但本阶段暂不处理；空列表写 []。",
+      "opening 阶段只需要足够生成 opening brief 和 first_round，不要求填满所有证据细节。",
+      "search round 后更新 enoughness、remaining_gaps 和 proposed_next_round，不新增独立 provisional answer 文件。"
+    ]
+  },
+  "metadata": {
+    "run_id": "<run-id>",
+    "snapshot_stage": "opening | round | pre_memo | current | legacy_import",
+    "snapshot_source": "manual | llm | search_round_update | legacy_import",
+    "updated_at": "<ISO-8601>",
+    "based_on": {
+      "idea": "<idea.md path | n/a>",
+      "search_round": "<sources/search-round-N.md | n/a>",
+      "user_feedback": "<用户反馈摘要 | n/a>",
+      "other_materials": []
+    }
+  },
+  "origin_context": {
+    "initial_topic": "<从原始输入抽取的短标题>",
+    "original_user_words": "<用户原始输入，保真引用；过长时保留关键原句并指向 idea.md>",
+    "problem_source": "<用户口述 | wiki idea | existing run | external material | other>",
+    "known_context": [],
+    "existing_materials": [],
+    "user_feedback": []
+  },
+  "inquiry_shape": {
+    "research_object": "<研究对象：工具、制度、合同、地点、流程、问题等>",
+    "operation_type": "<解释 | 比较 | 验证 | 诊断 | 选型 | 规划 | 写作 | other>",
+    "candidate_paths": [],
+    "key_terms": [],
+    "map": {
+      "key_variables": [],
+      "major_paths": [],
+      "frictions_or_conditions": [],
+      "disagreements": [],
+      "unknowns": {
+        "searchable": [],
+        "user_only": [],
+        "deferred": []
+      }
+    }
+  },
+  "scope_boundary": {
+    "in_scope": [],
+    "out_of_scope": [],
+    "action_boundary": "<只读研究 | 给建议但不替用户决策 | 可写 run 内文件 | other>",
+    "user_only_decisions": []
+  },
+  "evidence_contract": {
+    "source_surfaces": {
+      "official_or_primary": {
+        "priority": "required | preferred | optional | not_needed",
+        "role": [
+          "rule_or_ground_truth"
+        ],
+        "look_for": [],
+        "examples": [],
+        "downgrade_if": []
+      },
+      "market_or_news": {
+        "priority": "required | preferred | optional | not_needed",
+        "role": [
+          "current_status_or_market_signal"
+        ],
+        "look_for": [],
+        "examples": [],
+        "downgrade_if": []
+      },
+      "academic": {
+        "priority": "required | preferred | optional | not_needed",
+        "role": [
+          "method_or_background"
+        ],
+        "look_for": [],
+        "examples": [],
+        "downgrade_if": []
+      },
+      "community_or_cases": {
+        "priority": "required | preferred | optional | not_needed",
+        "role": [
+          "practice_friction_or_counterexample"
+        ],
+        "look_for": [],
+        "examples": [],
+        "downgrade_if": []
+      }
+    },
+    "claim_rules": [
+      {
+        "claim_type": "rule_or_policy | product_current_status | practice_pattern | implementation_feasibility | legal_risk | market_comparison | user_preference | other",
+        "minimum_evidence": "<这类结论最低需要什么证据>",
+        "must_not_use_as_sole_basis": [],
+        "downgrade_label_when_weak": "unverified | weak_signal | anecdotal | historical | n/a"
+      }
+    ],
+    "cross_check": {
+      "required_for": [],
+      "acceptable_combinations": [
+        "<例如：official_or_primary + community_or_cases>",
+        "<例如：primary docs + implementation example>"
+      ],
+      "when_single_source_is_enough": []
+    },
+    "recency": {
+      "default_time_window": "<latest available | last 30 days | last 12 months | last 5 years | not_time_sensitive>",
+      "must_show_dates_for": []
+    },
+    "negative_or_counterevidence": {
+      "required": "yes | no | conditional",
+      "look_for": [],
+      "stop_if_found": []
+    },
+    "weak_evidence_policy": {
+      "can_use_for": [
+        "hypothesis",
+        "friction_signal",
+        "example"
+      ],
+      "cannot_use_for": [
+        "final_claim",
+        "legal_or_policy_conclusion",
+        "current_status_without_date"
+      ],
+      "wording": "<弱证据在 output 中如何降级表述>"
+    },
+    "stop_rules": {
+      "opening_first_round_ready_when": [
+        "source_surfaces 已能支持首轮检索方向",
+        "first_round.questions 每个问题都有 expected_source_surfaces 和 stop_when"
+      ],
+      "round_search_done_when": [
+        "本轮 search intent 已被回答或明确无法回答",
+        "remaining_gaps 已区分 searchable、user_only、deferred",
+        "关键结论已按 claim_rules 标注证据等级"
+      ],
+      "memo_ready_when": [
+        "enoughness.enough_for 覆盖 original intent 的主要用途",
+        "not_enough_for 不阻止当前 output_action_contract",
+        "弱证据和剩余不确定性可以在 output 中明示"
+      ]
+    },
+    "known_limits": []
+  },
+  "output_action_contract": {
+    "product_shape": "<memo | checklist | comparison table | workflow | draft | other>",
+    "audience": "<给谁看 / 给谁用>",
+    "allowed_actions": [],
+    "disallowed_actions": [],
+    "needs_user_confirmation": []
+  },
+  "derived": {
+    "use_intent": {
+      "value": "<用户拿研究结果做什么>",
+      "derived_from": [
+        "original_user_words"
+      ],
+      "notes": "<推导说明；若只是默认假设，写 temporary>"
+    },
+    "objective": {
+      "decision_or_action": "<要支持的决定、推进的项目或解决的问题>",
+      "research_question": "<为了上述目标，需要回答的问题>",
+      "current_formulation": "<当前工作表述，可随搜索更新>"
+    },
+    "search_plan": {
+      "source_surfaces": [
+        "official_or_primary",
+        "market_or_news",
+        "academic",
+        "community_or_cases"
+      ],
+      "first_round": {
+        "status": "draft | user_confirmed | sealed | completed | n/a",
+        "questions": [
+          {
+            "question": "<首轮自然语言问题，不是裸 query>",
+            "helps_objective": "<它如何服务 objective.research_question>",
+            "expected_source_surfaces": [],
+            "stop_when": []
+          }
+        ],
+        "user_review": {
+          "decision": "pending | confirmed | revised | n/a",
+          "user_feedback": "n/a",
+          "reviewed_at": "n/a"
+        }
+      },
+      "remaining_gaps": {
+        "searchable": [],
+        "user_only": [],
+        "deferred": []
+      },
+      "proposed_next_round": {
+        "status": "n/a | draft | user_confirmed | rejected | completed",
+        "derived_from_round": "<sources/search-round-N.md | n/a>",
+        "questions": [
+          {
+            "question": "<下一轮自然语言问题，不是裸 query>",
+            "helps_original_intent": "<为什么仍服务原始动机>",
+            "derived_from": [
+              "enoughness_current",
+              "new_gaps",
+              "state_delta",
+              "source_notes"
+            ],
+            "expected_source_surfaces": [],
+            "stop_when": []
+          }
+        ],
+        "recommendation": "search_next | ask_user | pivot | write_memo | child_run | stop | n/a",
+        "user_decision_needed": "<用户需要批准、修改或取舍什么；没有写 n/a>"
+      }
+    },
+    "enoughness": {
+      "current": "insufficient | partial | enough_for_memo | enough_to_stop | unknown",
+      "enough_for": [],
+      "not_enough_for": [],
+      "evidence_limits": [],
+      "next_action": "search_next | ask_user | defer | write_memo | stop"
+    }
+  },
+  "review_brief_rendering": {
+    "opening_brief_fields": [
+      "origin_context.original_user_words",
+      "derived.use_intent",
+      "inquiry_shape.research_object",
+      "inquiry_shape.operation_type",
+      "scope_boundary",
+      "output_action_contract.product_shape",
+      "scope_boundary.action_boundary",
+      "evidence_contract.source_surfaces",
+      "derived.search_plan.first_round",
+      "tracked_facets"
+    ],
+    "round_brief_fields": [
+      "derived.use_intent",
+      "derived.objective",
+      "latest search-round-N summary",
+      "derived.enoughness",
+      "derived.search_plan.remaining_gaps",
+      "derived.search_plan.proposed_next_round",
+      "tracked_facets"
+    ]
+  },
+  "child_runs": {
+    "candidates": []
+  },
+  "tracked_facets": [
+    {
+      "facet": "use_intent",
+      "value": "unknown",
+      "resolution_state": "missing | unresolved | temporary | confirmed | deferred",
+      "basis": "user | evidence | inference | default | mixed | legacy_doc",
+      "alternatives": [],
+      "next_action": "ask_user | search_next | defer | none",
+      "update_reason": ""
+    },
+    {
+      "facet": "evidence_contract",
+      "value": "unknown",
+      "resolution_state": "missing | unresolved | temporary | confirmed | deferred",
+      "basis": "user | evidence | inference | default | mixed | legacy_doc",
+      "alternatives": [],
+      "next_action": "ask_user | search_next | defer | none",
+      "update_reason": ""
+    }
+  ],
+  "legacy_import": {
+    "imported_from_task_card": "yes | no",
+    "imported_from_judgment": "yes | no",
+    "imported_from_memo": "yes | no",
+    "import_notes": "n/a"
+  },
+  "change_log": []
+}
