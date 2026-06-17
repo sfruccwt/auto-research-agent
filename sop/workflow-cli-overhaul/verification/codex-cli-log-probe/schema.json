@@ -1,0 +1,77 @@
+{
+  "type": "object",
+  "properties": {
+    "probe_name": {
+      "type": "string"
+    },
+    "search_task_attempted": {
+      "type": "boolean"
+    },
+    "search_queries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "source_note": {
+            "type": "string"
+          }
+        },
+        "required": ["title", "url", "source_note"],
+        "additionalProperties": false
+      }
+    },
+    "tool_log_expectation": {
+      "type": "object",
+      "properties": {
+        "expected_tool_event_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "what_adapter_should_extract": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "known_limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "expected_tool_event_types",
+        "what_adapter_should_extract",
+        "known_limitations"
+      ],
+      "additionalProperties": false
+    },
+    "answer_summary": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "probe_name",
+    "search_task_attempted",
+    "search_queries",
+    "sources",
+    "tool_log_expectation",
+    "answer_summary"
+  ],
+  "additionalProperties": false
+}

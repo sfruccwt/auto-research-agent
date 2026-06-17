@@ -1,0 +1,89 @@
+{
+  "type": "object",
+  "properties": {
+    "probe_name": {
+      "type": "string"
+    },
+    "route_probes_attempted": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "route_name": {
+            "type": "string"
+          },
+          "attempted": {
+            "type": "boolean"
+          },
+          "mechanism": {
+            "type": "string"
+          },
+          "observable_log_expectation": {
+            "type": "string"
+          },
+          "result_summary": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "route_name",
+          "attempted",
+          "mechanism",
+          "observable_log_expectation",
+          "result_summary"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "event_types_expected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "adapter_fields_to_extract": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "langsmith_replacement_assessment": {
+      "type": "object",
+      "properties": {
+        "langsmith_primary_purpose": {
+          "type": "string"
+        },
+        "replaceable_locally": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "not_fully_replaced_without_product_layer": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "langsmith_primary_purpose",
+        "replaceable_locally",
+        "not_fully_replaced_without_product_layer"
+      ],
+      "additionalProperties": false
+    },
+    "answer_summary": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "probe_name",
+    "route_probes_attempted",
+    "event_types_expected",
+    "adapter_fields_to_extract",
+    "langsmith_replacement_assessment",
+    "answer_summary"
+  ],
+  "additionalProperties": false
+}

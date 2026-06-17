@@ -23,11 +23,15 @@
 | 阶段流程 | `stage-search.md` | 说明每轮 search round 如何执行、封账、进入用户审阅 | 不自动进入下一轮 |
 | 阶段流程 | `stage-output-closing.md` | 说明 memo、output、done gate、deliver / close | 不回头定义搜索策略 |
 | 局部设计 | `opening-clarification-technical-design.md` | 定义 opening brief 最小字段和写回边界 | 不扩写完整 schema |
+| 局部设计 | `opening-intake-split-prompt-v2-review.md` | 原始输入混有多个主题时，用 prompt 先拆出候选 run | 不生成模板产物 |
+| 局部设计 | `opening-note-template-v2-review.md` | 用 MD 形式呈现 opening 阶段内部待填写模板 | 不写用户展示面 |
+| 局部设计 | `opening-brief-template-v2-review.md` | 定义 opening brief 的用户展示字段和字段映射 | 不替代 opening note |
 | 局部设计 | `search-question-derivation-design.md` | 定义如何从 round 结果派生 `proposed_next_round` | 不自动执行下一轮 |
 | 状态模型 | `workflow-cli-state-log-model.md` | 说明 state、snapshot、log、seal 的职责 | 不设计自动推进器 |
 | 状态封账 | `workflow-cli-controller-technical-design.md` | 旧 controller 文档的降级版：state ledger / round sealer | 不调用 LLM |
 | 交接契约 | `workflow-cli-taskpack-contract.md` | 定义可选 handoff packet / review packet 的最小边界 | 不作为自动执行协议 |
 | 改造计划 | `workflow-cli-tooling-overhaul-plan.md` | 记录当前简化后的实施方向 | 不保留旧全自动路线 |
+| 部署评估 | `langgraph-local-deployment-evaluation.md` | 评估 LangGraph 本地 dev / up 与 Codex CLI 节点适配方案 | 不决定立即部署 |
 | 场景记录 | `workflow-cli-use-scenarios.md` | 记录用户启动、审阅、继续、收口场景 | 不定义最终流程 |
 
 ## 2. 四张核心流程图
@@ -47,18 +51,9 @@
 
 Opening 阶段展示用户意图和首轮检索计划。批准后写入 `notes/search-opening.md`。
 
-最小字段：
+如果原始输入混有多个可独立研究的主题，先用 `opening-intake-split-prompt-v2-review.md` 拆出所有候选 run，再让用户决定是开多个平行 run，还是开一个母 run 并拆 child runs。每份 `opening-note-template-v2-review.md` 仍只针对一个具体主题填写。
 
-- `user_intent`
-- `research_object`
-- `operation_type`
-- `scope_boundary`
-- `use_intent`
-- `output_shape / action_boundary`
-- `source_surfaces`
-- `first_search_questions`
-- `stop_when`
-- `temporary_or_default_fields`
+`opening-note-template-v2-review.md` 是内部待填写模板；`opening-brief-template-v2-review.md` 是给用户展示的 brief 模板，并记录 brief 字段从 opening note 哪些字段抽取。
 
 ### Round N brief
 
