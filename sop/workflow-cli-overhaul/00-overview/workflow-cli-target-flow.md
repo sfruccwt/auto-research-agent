@@ -8,7 +8,7 @@
 
 这里借鉴 LangGraph 的 workflow 思路：先把流程拆成 discrete nodes；每个 node 做一个明确功能；不同 node 通过共享 state 交接；路线选择发生在 node 内部，而不是让脚本隐式自动推进。Dify 先只作为固定工作流 / 可视化编排产品形态的参照，不在本轮展开字段或实现。本文只先固定流程图，不展开字段模板。
 
-图的讨论基准放在本文。`how-to-draw-langgraph-workflow.md` 只保留调研依据和画图原则；项目自己的总图、子图和节点契约表以后都在本文维护。
+图的讨论基准放在本文。`../90-knowledge/how-to-draw-langgraph-workflow.md` 只保留调研依据和画图原则；项目自己的总图、子图和节点契约表以后都在本文维护。
 
 参考来源：
 
@@ -31,13 +31,13 @@
 | Node | 类型 | 目标 | 主要输入 | 主要输出 |
 |---|---|---|---|---|
 | Startup | Program | 接受 idea 或用户指令，创建 run 入口 | idea 列表选择、指定 idea 文件、用户口述主题 | `idea.md`、初始 log / queue |
-| Opening Brief | LLM | 把 raw intake 变成可审阅的问题框架和首轮检索计划 | `idea.md`、用户补充 | `notes/research-state.md`、`notes/search-opening.md` |
+| Opening Brief | LLM | 把 raw intake 变成可审阅的问题框架和首轮检索计划 | `idea.md`、用户补充 | opening note、opening brief |
 | Opening Review Gate | User review | 确认理解是否正确、首轮计划是否可执行 | opening brief | opening decision / revised opening input |
-| Search Round | LLM + Search lanes + Program | 执行一轮检索、压缩证据、更新当前态、提出下一步 | `notes/search-opening.md` 或已批准的 `proposed_next_round` | `sources/search-round-N.md`、`sources/search-round-N-human.md`、更新后的 `notes/research-state.md`、round seal |
-| Round Summary | Artifact | 把本轮发现、缺口和下一步建议交给用户审阅 | search round artifacts | round brief / `research-state.next_step` |
-| Round Review Gate | User review | 审阅本轮发现和下一步建议 | round brief / `research-state.next_step` | 用户决定：继续 / 修改 / pivot / child run / memo / stop |
+| Search Round | LLM + Search lanes + Program | 执行一轮检索、压缩证据、更新当前态、提出下一步 | 已批准的 first search plan 或 `proposed_next_round` | `sources/search-round-N.md`、`sources/search-round-N-human.md`、runtime state update、round seal |
+| Round Summary | Artifact | 把本轮发现、缺口和下一步建议交给用户审阅 | search round artifacts | round brief / runtime next step |
+| Round Review Gate | User review | 审阅本轮发现和下一步建议 | round brief / runtime next step | 用户决定：继续 / 修改 / pivot / child run / memo / stop |
 | Child Run | Independent run | 独立处理派生子课题，再按需回填母 run | derived child question | child output / closing summary / optional backfill |
-| Memo | LLM | 把多轮判断收束成最终写作依据 | 当前 `research-state`、已批准的 enoughness | `notes/memo.md` |
+| Memo | LLM | 把多轮判断收束成最终写作依据 | 当前 runtime state、已批准的 enoughness | `notes/memo.md` |
 | Memo Review Gate | User review | 确认最终写作依据是否足够、表达边界是否正确 | `notes/memo.md` | memo decision |
 | Output | LLM | 写内容最终化草稿 | `notes/memo.md`、sources | `output.md` |
 | Closing | Program | done gate 后投递或关闭 | `output.md` 或关闭理由 | wiki inbox 文件或 `notes/closing-summary.md` |
@@ -89,8 +89,8 @@ flowchart TD
   O1 -->|"multiple"| O2["呈现候选主题 + run 组织建议\n平行 runs / 母 run + child runs / 先后顺序"]
   O2 --> O3["用户确认拆分与组织方式"]
   O3 --> O4
-  O4 --> O5["填写 opening research-state / opening note\n每个主题一份"]
-  O5 --> O6["生成 search-opening\nfirst_search_questions / source_surfaces / stop_when"]
+  O4 --> O5["填写 opening note\n每个主题一份"]
+  O5 --> O6["生成 first search plan 字段\nquestions / source_surfaces / stop_when"]
   O6 --> O7["呈现 opening brief"]
 
   O2 -. "用户要求合并、拆细或重排" .-> O1
@@ -100,15 +100,14 @@ flowchart TD
 
 边界：
 
-- `notes/search-opening.md` 是首轮计划，不是检索记录。
-- `notes/research-state.md` 存跨节点需要保留的当前态，不存 prompt 模板或展示文本。
 - 原始输入只作为 `origin_context.raw_input` 保留：来自 `idea.md` 就挂路径或链接，来自口述就记录原文；它不是 Opening 图里的主流程节点。
 - Topic split check 的输入是 raw intake；输出是候选主题数量、每个主题的简略方向、原始输入，以及初步 run 组织建议。
-- 如果 raw intake 混有多个可独立研究的主题，先把候选主题和组织建议反馈给用户；用户确认后，再把 split packet 交给问题框架抽取。
-- Split packet 不替代 opening note；它只告诉下游“要为哪些主题分别抽取框架”。每个主题仍各自生成一份 opening note / opening brief。
-- Opening research-state / opening note 是否单开文件，放到模板设计里继续讨论；节点图只表达它们在这里被填写。
-- Opening 的必填项、一级 / 二级字段和缺失反馈规则，属于 `opening-note-template-v2-review.md` 的模板设计，不放进节点图。
-- 用户修改 opening 时，回到 node 内部重算 brief；不创建新阶段。
+- 如果 raw intake 混有多个可独立研究的主题，先把 Split Summary 反馈给用户；用户确认后，再进入对应主题的 opening note 填写。
+- Split Summary 不替代 opening note；它只判断是否拆分、候选主题是什么、建议如何组织。每个被选中的主题仍各自生成一份 opening note / opening brief。
+- Opening 的必填项、一级 / 二级字段和缺失反馈规则，属于 `../10-opening/opening-note-template-v2-review.md` 的模板设计，不放进节点图。
+- Opening 返修时，先根据用户反馈更新 opening note，再由 opening note 重新生成 opening brief。
+- Opening brief 只作为审阅视图，不直接维护语义字段；若 brief 与 note 不一致，以 opening note 为准并重新生成 brief。
+- 用户对 brief 的反馈应回写到 opening note 的对应字段或 derived 字段，而不是直接改 brief 展示字段。
 
 ## 5. Search round node 内部图
 
@@ -116,7 +115,7 @@ Search round 是本流程最复杂的大 node。它内部包含检索 lanes、�
 
 ```mermaid
 flowchart TD
-  S0["Input\n已批准 search-opening 或 proposed_next_round"] --> S1["派检索 lane\n隔离原始工具输出"]
+  S0["Input\n已批准 first search plan 或 proposed_next_round"] --> S1["派检索 lane\n隔离原始工具输出"]
   S1 --> S2["agent-reach lane\n按来源面检索"]
   S1 --> S3["browser route lane\n默认 in-app browser\n必要时 Chrome fallback"]
   S1 --> S3M["manual / known-source lane\n可选"]
@@ -125,7 +124,7 @@ flowchart TD
   S3M --> S4
   S4 --> S5["写 sources/search-round-N.md\nsearch_intent / key_findings / round_answer / source_and_route_log"]
   S5 --> S6["写 sources/search-round-N-human.md\n用户阅读摘要"]
-  S6 --> S7["覆盖更新 research-state\n只吸收影响全局回答或下一步编排的压缩变化"]
+  S6 --> S7["更新 runtime state\n只吸收影响全局回答或下一步编排的压缩变化"]
   S7 --> S8["派生 next_step\nsearch_next / ask_user / pivot / child_run / write_memo / stop"]
   S8 --> S9["Seal round\nvalidate / snapshot / log"]
   S9 --> S10["呈现 Round N brief\n交给 Round review"]
@@ -142,7 +141,7 @@ flowchart TD
 边界：
 
 - `sources/search-round-N.md` 记录本轮为什么搜、搜到了什么、证据能支撑什么、还有什么缺口。
-- `notes/research-state.md` 不复制本轮来源清单，只保存会影响全局回答草稿或下一步动作的压缩结果。
+- Runtime state 不复制本轮来源清单，只保存会影响全局回答草稿或下一步动作的压缩结果。
 - `proposed_next_round` 是审阅对象，不是自动执行指令。
 - browser route lane 默认只读；fallback / skipped 必须写进 `source_notes`。
 
@@ -152,7 +151,7 @@ Round Review 是用户控制点。它不执行搜索，也不直接写最终稿�
 
 ```mermaid
 flowchart TD
-  R0["Input\nRound N brief + research-state.next_step"] --> R1["用户审阅\n发现 / 证据边界 / 下一步建议"]
+  R0["Input\nRound N brief + runtime next step"] --> R1["用户审阅\n发现 / 证据边界 / 下一步建议"]
   R1 --> R2["记录用户决定"]
   R2 --> R3["输出下一步允许动作"]
 
@@ -199,7 +198,7 @@ Memo 负责把多轮研究压成用户可确认的写作依据；Output 负责�
 
 ```mermaid
 flowchart TD
-  M0["Input\nresearch-state.next_step = write_memo"] --> M1["pre-memo snapshot\nProgram"]
+  M0["Input\nruntime next step = write_memo"] --> M1["pre-memo snapshot\nProgram"]
   M1 --> M2["LLM 写 notes/memo.md\n主结论 / 证据边界 / 仍未覆盖的限制"]
   M2 --> M3["用户审阅 memo"]
   M3 --> M4["LLM 写 output.md"]
@@ -255,7 +254,7 @@ flowchart TD
 
 | Node | 类型 | 读取 | 写入 | 控制出口 | 是否进总图 |
 |---|---|---|---|---|---|
-| Opening Brief | LLM | `idea.md` | `notes/research-state.md`、`notes/search-opening.md` | Opening Review Gate | 是；生成第一个可审阅产物 |
+| Opening Brief | LLM | `idea.md` | opening note、opening brief | Opening Review Gate | 是；生成第一个可审阅产物 |
 | Opening Review Gate | Human review | opening brief | 用户决定、必要修订 | Search Round / Opening Brief | 是；人工审批控制点 |
 | Search Round | LLM + Search lanes + Program | approved search plan | `sources/search-round-N.md`、human summary、state update | Round Summary | 是；重执行节点 |
 | agent-reach lane | Search lane | search plan | compressed lane result | Source synthesis | 否；放 Search Round 子图 |

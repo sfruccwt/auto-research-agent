@@ -30,14 +30,14 @@
 
 ## 2. 当前文档改造范围
 
-优先保持四张核心图一致：
+以 `workflow-cli-target-flow.md` 为唯一流程图源：
 
-1. `workflow-cli-target-flow.md`
-2. `stage-opening-clarification.md`
-3. `stage-search.md`
-4. `search-question-derivation-design.md`
+1. `workflow-cli-target-flow.md` 维护总流程、节点内部图、节点契约和用户审阅点。
+2. 模板文档只维护字段与填写说明。
+3. 状态、控制器、taskpack 和检索路由文档只维护契约与边界。
+4. 调研、部署评估和场景文档只保留资料与判断依据。
 
-其他文档只跟随这些图调整职责、命名和最小契约。
+其他文档不再维护独立 Mermaid 流程图，只跟随唯一图源调整职责、命名和最小契约。
 
 ## 3. Artifact 约定
 
@@ -100,7 +100,7 @@ ara run close <run-id>
 
 ### 阶段 1：文档对齐
 
-- 重写四张核心流程图。
+- 固定 `workflow-cli-target-flow.md` 作为唯一流程图入口。
 - 删除旧自动推进、自动循环、复杂 clarification/gap taxonomy 叙述。
 - 统一 `search-opening`、`proposed_next_round`、`round brief`、`seal opening`、`seal round` 命名。
 
@@ -125,7 +125,7 @@ ara run close <run-id>
 ## 6. 验收点
 
 - 总流程图没有自动 search loop。
-- Opening 图包含 `notes/search-opening.md`。
-- Search 图在用户审阅前不进入下一轮。
-- Search question 派生图输出 `proposed_next_round`，不输出自动执行。
+- Opening node 图包含 `notes/search-opening.md`。
+- Search round node 图在用户审阅前不进入下一轮。
+- `proposed_next_round` 只作为 Round brief 审阅对象，不作为自动执行指令。
 - 文档中不再把脚本称为自动推进器。

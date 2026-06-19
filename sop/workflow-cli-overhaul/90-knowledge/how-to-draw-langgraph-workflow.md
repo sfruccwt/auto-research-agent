@@ -120,7 +120,7 @@
 
 ## 5. 与目标流程文档的关系
 
-本文件只保留调研结论和画图原则，不再维护本项目的具体 Mermaid 图。项目自己的总图、`Search Round` 子图、`Round Review Gate` 子图、`Child Run / backfill` 树图和节点契约表，统一迁入 `workflow-cli-target-flow.md`。
+本文件只保留调研结论和画图原则，不再维护本项目的具体 Mermaid 图。项目自己的总图、`Search Round` 子图、`Round Review Gate` 子图、`Child Run / backfill` 树图和节点契约表，统一迁入 `../00-overview/workflow-cli-target-flow.md`。
 
 一句话原则：
 
