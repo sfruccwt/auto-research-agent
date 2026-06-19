@@ -21,7 +21,7 @@
 | `10-opening/` | `opening-intake-split-prompt-v2-review.md`、`split-summary-template-v2-review.md`、`opening-note-template-v2-review.md`、`opening-brief-template-v2-review.md` | 维护 Opening 阶段的拆题、问题框架、首轮计划和用户审阅 brief | 不执行检索，不维护 search round 记录 |
 | `20-search-round/` | `search-plan-and-route-design-review.md`、`search-round-template-v2-review.md` | 维护一轮检索的 query / route 设计和 search round 审计模板 | 不改 opening 模板字段 |
 | `30-state-and-handoff/` | `research-state-template-v2-review.md`、`research-state-json-template.v2.json`、`workflow-cli-state-log-model.md`、`workflow-cli-taskpack-contract.md` | 维护跨阶段状态、JSON 模板、state/log/seal/handoff/review packet 边界 | 不替 LLM 推导语义，不替用户批准下一步 |
-| `90-knowledge/` | `ai-search-tooling-knowledge-review.md`、`how-to-draw-langgraph-workflow.md`、`langgraph-local-deployment-evaluation.md` | 保存支撑设计判断的工具知识、画图方法和部署评估 | 不作为执行规范反向覆盖阶段模板 |
+| `90-knowledge/` | `ai-search-tooling-knowledge-review.md`、`search-api-service-comparison.md`、`web-search-step-implementation-knowledge.md`、`how-to-draw-langgraph-workflow.md`、`langgraph-local-deployment-evaluation.md` | 保存支撑设计判断的工具知识、画图方法和部署评估 | 不作为执行规范反向覆盖阶段模板 |
 | `verification/` | `codex-cli-log-probe/` 等验证材料 | 保存 probe 输出、日志样本和验证证据 | 不承载设计入口 |
 
 ## 2. 唯一流程图来源
