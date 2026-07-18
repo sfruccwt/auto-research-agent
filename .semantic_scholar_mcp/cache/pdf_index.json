@@ -1,0 +1,28 @@
+{
+  "f0d94d42b77133c4aa47b2b17f844e11fc71a6ec": {
+    "paper_id": "5be1938afb671edac044f3db83bcd6d875d5ef78",
+    "title": "The China Syndrome: Local Labor Market Effects of Import Competition in the United States",
+    "prefix": "f0",
+    "updated_at": "2026-05-20T10:37:11.126988+00:00",
+    "pdf_path": ".semantic_scholar_mcp\\artifacts\\pdfs\\f0\\f0d94d42b77133c4aa47b2b17f844e11fc71a6ec.pdf",
+    "markdown_path": ".semantic_scholar_mcp\\artifacts\\markdown\\f0\\f0d94d42b77133c4aa47b2b17f844e11fc71a6ec.md",
+    "chunks_path": ".semantic_scholar_mcp\\artifacts\\markdown\\f0\\f0d94d42b77133c4aa47b2b17f844e11fc71a6ec.chunks.json",
+    "images_dir": null,
+    "include_images": false,
+    "chunk_count": 63,
+    "cache_hit": false
+  },
+  "6312b02324e001a73968cc4ad6dc42fefd62987b": {
+    "paper_id": "edd866eedb754b495d27a4f222c1d59528bb0026",
+    "title": "Trafficking Networks and the Mexican Drug War",
+    "prefix": "63",
+    "updated_at": "2026-05-20T10:44:26.572276+00:00",
+    "pdf_path": ".semantic_scholar_mcp\\artifacts\\pdfs\\63\\6312b02324e001a73968cc4ad6dc42fefd62987b.pdf",
+    "markdown_path": ".semantic_scholar_mcp\\artifacts\\markdown\\63\\6312b02324e001a73968cc4ad6dc42fefd62987b.md",
+    "chunks_path": ".semantic_scholar_mcp\\artifacts\\markdown\\63\\6312b02324e001a73968cc4ad6dc42fefd62987b.chunks.json",
+    "images_dir": null,
+    "include_images": false,
+    "chunk_count": 116,
+    "cache_hit": false
+  }
+}

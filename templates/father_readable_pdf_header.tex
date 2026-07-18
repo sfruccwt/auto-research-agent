@@ -1,0 +1,35 @@
+% father_readable_pdf_header.tex
+% Purpose: "给父亲看的模板" - large-font, plain white A4 PDF style for Pandoc + XeLaTeX.
+% Use with:
+% pandoc input.md -o output.tex -t latex -V documentclass=ctexart --include-in-header=templates/father_readable_pdf_header.tex
+
+\usepackage[a4paper,margin=10mm]{geometry}
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{etoolbox}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\setCJKmainfont{Microsoft YaHei}
+\setmainfont{Microsoft YaHei}
+\setmonofont{Consolas}
+\linespread{1.12}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.65em}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\pagestyle{empty}
+\AtBeginDocument{\thispagestyle{empty}}
+\renewcommand{\arraystretch}{1.25}
+\AtBeginDocument{\fontsize{30pt}{42pt}\selectfont}
+\AtBeginEnvironment{longtable}{\fontsize{20pt}{28pt}\selectfont}
+\AtBeginEnvironment{itemize}{\fontsize{28pt}{38pt}\selectfont}
+\AtBeginEnvironment{enumerate}{\fontsize{28pt}{38pt}\selectfont}
+\titleformat{\section}{\bfseries\fontsize{42pt}{52pt}\selectfont}{}{0pt}{}
+\titleformat{\subsection}{\bfseries\fontsize{34pt}{44pt}\selectfont}{}{0pt}{}
+\titleformat{\subsubsection}{\bfseries\fontsize{30pt}{40pt}\selectfont}{}{0pt}{}
+\titlespacing*{\section}{0pt}{0pt}{0.7em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.45em}
+\titlespacing*{\subsubsection}{0pt}{0.8em}{0.35em}
+\setlist{leftmargin=1.2em,itemsep=0.25em,topsep=0.25em}
+\definecolor{tablehead}{RGB}{242,242,242}

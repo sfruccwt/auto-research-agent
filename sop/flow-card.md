@@ -27,6 +27,7 @@
 2. **搜索：每轮更新 state**
    - 先委托检索子 agent 执行双轨搜索，母 agent 只接收压缩结果。
    - 写 `sources/search-round-N.md`。
+   - 写 `sources/search-round-N-human.md`，按本轮问题组织发现和关键依据。
    - 在 `search_round_summary.state_delta` 说明本轮改变了什么。
    - 更新 `notes/research-state.md`。
    - 保存 `notes/state-history/research-state-rNN.md`。
@@ -50,10 +51,11 @@
 
 1. 这轮搜索回应了哪个 state gap？
 2. 本轮是否由检索子 agent 完成，或是否在 `source_notes` / `备注` 说明了 fallback？
-3. 本轮发现改变了哪个 slot / facet？
-4. 哪些值从 `temporary` 变成 `confirmed`，哪些仍是 `unresolved`？
-5. 当前证据足够支持什么，不足以支持什么？
-6. 下一步应该 continue、pivot、ask_user、write_memo，还是 stop？
+3. 是否生成了 `sources/search-round-N-human.md`，且按问题组织发现和关键依据？
+4. 本轮发现改变了哪个 slot / facet？
+5. 哪些值从 `temporary` 变成 `confirmed`，哪些仍是 `unresolved`？
+6. 当前证据足够支持什么，不足以支持什么？
+7. 下一步应该 continue、pivot、ask_user、write_memo，还是 stop？
 
 任一答不清，就不要进入下一轮或 memo。
 

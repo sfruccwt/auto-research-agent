@@ -1,5 +1,4 @@
 {
-  "version": 1,
   "items": [
     {
       "current_gate": "opening",
@@ -42,6 +41,117 @@
       "idea_slug": "2026-05-15-yue-fei-battles-and-northern-expedition",
       "current_gate": "opening",
       "started": "2026-05-15T11:21:16+08:00"
+    },
+    {
+      "current_gate": "opening",
+      "run_id": "2026-05-24-llm-web-search-principles-auto-research-optimization",
+      "started": "2026-05-24T11:01:25+08:00",
+      "idea_slug": "2026-05-24-llm-web-search-principles-auto-research-optimization"
+    },
+    {
+      "run_id": "2026-05-26-asr-raw-vs-clean-prompt-llm",
+      "current_gate": "midway",
+      "started": "2026-05-26T10:52:25+08:00",
+      "idea_slug": "2026-05-26-asr-raw-vs-clean-prompt-llm"
+    },
+    {
+      "idea_slug": "2026-05-26-llm-search-tool-network-egress-ip-attribution",
+      "run_id": "2026-05-24-llm-web-search-principles-auto-research-optimization/sub/llm-search-tool-network-egress-ip-attribution",
+      "started": "2026-05-26T12:20:28+08:00",
+      "parent_run": "2026-05-24-llm-web-search-principles-auto-research-optimization",
+      "current_gate": "opening"
+    },
+    {
+      "parent_run": "2026-05-24-llm-web-search-principles-auto-research-optimization",
+      "run_id": "2026-05-24-llm-web-search-principles-auto-research-optimization/sub/research-agent-sop-design-patterns",
+      "idea_slug": "2026-05-26-research-agent-sop-design-patterns",
+      "current_gate": "midway",
+      "started": "2026-05-26T17:33:09+08:00"
+    },
+    {
+      "run_id": "2026-05-25-sop-workflow-development",
+      "idea_slug": "2026-05-25-sop-workflow-development",
+      "current_gate": "opening",
+      "started": "2026-05-26T17:40:38+08:00"
+    },
+    {
+      "idea_slug": "2026-06-01-codex-windows-node-repl-sandbox",
+      "run_id": "2026-06-01-codex-windows-node-repl-sandbox",
+      "started": "2026-06-01T16:45:27+08:00",
+      "current_gate": "opening"
+    },
+    {
+      "current_gate": "opening",
+      "started": "2026-06-02T16:47:11+08:00",
+      "idea_slug": "2026-06-02-sub-agent-context-management",
+      "run_id": "2026-06-02-sub-agent-context-management"
+    },
+    {
+      "current_gate": "opening",
+      "run_id": "2026-06-02-chrome-search-lane-cost-alternatives",
+      "idea_slug": "2026-06-02-chrome-search-lane-cost-alternatives",
+      "started": "2026-06-02T17:03:06+08:00"
+    },
+    {
+      "run_id": "2026-06-04-cli-tools-ai-workflows-research-routing",
+      "idea_slug": "2026-06-04-cli-tools-ai-workflows-research-routing",
+      "current_gate": "opening",
+      "started": "2026-06-04T10:49:58+08:00"
+    },
+    {
+      "idea_slug": "2026-06-04-studio-workstation-footprint",
+      "run_id": "2026-06-04-studio-workstation-footprint",
+      "started": "2026-06-04T11:02:38+08:00",
+      "current_gate": "opening"
+    },
+    {
+      "run_id": "2026-06-04-monitor-arm-dual-screen-buying",
+      "idea_slug": "2026-06-04-monitor-arm-dual-screen-buying",
+      "current_gate": "opening",
+      "started": "2026-06-04T20:36:35+08:00"
+    },
+    {
+      "started": "2026-06-04T20:38:43+08:00",
+      "idea_slug": "2026-06-04-office-chair-ergonomics-selection",
+      "run_id": "2026-06-04-office-chair-ergonomics-selection",
+      "current_gate": "opening"
+    },
+    {
+      "run_id": "2026-06-04-taipingqiao-metro-isochrone",
+      "idea_slug": "2026-06-04-taipingqiao-metro-isochrone",
+      "current_gate": "opening",
+      "started": "2026-06-04T22:40:21+08:00"
+    },
+    {
+      "idea_slug": "2026-06-10-cli-skill-reuse-principle",
+      "current_gate": "opening",
+      "run_id": "2026-06-10-cli-skill-reuse-principle",
+      "started": "2026-06-10T10:50:39+08:00"
+    },
+    {
+      "started": "2026-06-11T17:53:37+08:00",
+      "idea_slug": "2026-06-11-beike-rent-contract-risk-260611",
+      "run_id": "2026-06-11-beike-rent-contract-risk-260611",
+      "current_gate": "opening"
+    },
+    {
+      "current_gate": "opening",
+      "idea_slug": "2026-06-12-ai-scenario-flow-collab-workflow",
+      "run_id": "2026-06-12-ai-scenario-flow-collab-workflow",
+      "started": "2026-06-12T13:43:52+08:00"
+    },
+    {
+      "started": "2026-06-16T17:55:26+08:00",
+      "current_gate": "opening",
+      "idea_slug": "2026-06-16-codex-cli-json-template-controls",
+      "run_id": "2026-06-16-codex-cli-json-template-controls"
+    },
+    {
+      "run_id": "2026-06-17-agent-workflow-loop",
+      "started": "2026-06-17T10:02:24+08:00",
+      "current_gate": "opening",
+      "idea_slug": "2026-06-17-agent-workflow-loop"
     }
-  ]
+  ],
+  "version": 1
 }

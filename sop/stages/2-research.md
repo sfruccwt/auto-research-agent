@@ -10,6 +10,7 @@
 
 ```text
 sources/search-round-N.md
+sources/search-round-N-human.md
 notes/research-state.md
 notes/state-history/research-state-rNN.md
 ```
@@ -20,18 +21,21 @@ notes/state-history/research-state-rNN.md
 2. 委托检索子 agent 执行搜索；母 agent 默认不直接调用 `agent-reach`、Chrome/browser 或 WebSearch。
 3. 检索子 agent 必须执行强制双轨，并只返回结构化压缩结果和 URL 清单，不返回原始工具输出。
 4. 按 `sop/template-search-round.md` 写 `sources/search-round-N.md`，用子 agent 返回的压缩结果填写现有字段。
-5. 在 `search_round_summary.state_delta` 里说明本轮改变了哪些 slot / facet。
-6. 更新 `notes/research-state.md`。
-7. 保存完整快照到 `notes/state-history/research-state-rNN.md`。
-8. 给出 `agent_recommendation`：`continue_search / pivot / ask_user / write_memo / stop`。
+5. 按 `sop/template-search-round-human.md` 写 `sources/search-round-N-human.md`，基于同轮问题和发现生成面向人的阅读摘要。
+6. 在 `search_round_summary.state_delta` 里说明本轮改变了哪些 slot / facet。
+7. 更新 `notes/research-state.md`。
+8. 保存完整快照到 `notes/state-history/research-state-rNN.md`。
+9. 给出 `agent_recommendation`：`continue_search / pivot / ask_user / write_memo / stop`。
 
 ---
 
 ## 检索面设计
 
-`research-state.md` 只记录要开的来源面和搜索意图，不记录默认工具分配。强制双轨检索规则由 `AGENTS.md` 注入：检索时必须同时使用 `agent-reach lane` 和 `browser-search lane`。
+`research-state.md` 只记录要开的来源面和搜索意图，不记录默认工具分配。强制双轨检索规则由 `AGENTS.md` 注入：检索时必须同时使用 `agent-reach lane` 和 `browser route lane`。
 
-每轮实际使用的工具通道写入 `sources/search-round-N.md` 的 `queries_and_sources.检索通道`，不写入 `research-state.md`。每轮搜索都应在 `search_round_summary.state_delta` 中说明 browser lane 是否改变了 slot / facet；没有新增也要写明未改变。browser lane 产生的登录态、个性化或站点风控限制，写入 `source_notes`。
+每轮实际使用的工具通道写入 `sources/search-round-N.md` 的 `queries_and_sources.检索通道`，不写入 `research-state.md`。每轮搜索都应在 `search_round_summary.state_delta` 中说明 browser route lane 是否改变了 slot / facet；没有新增也要写明未改变。browser route lane 产生的登录态、个性化、站点风控限制、截图原因、Chrome extension 触发条件或 skipped/fallback 原因，写入 `source_notes`。
+
+`sources/search-round-N-human.md` 是人类阅读层，只按本轮问题组织发现、关键依据和简要结论。它不复制 `queries_and_sources`、`source_notes` 或 `search_round_summary` 表格，不承担状态迁移职责，也不替代 `research-state.md`。
 
 母 agent 不得把检索子 agent 的原始工具输出、网页全文转储或无筛选搜索列表粘贴进 `sources/`、`notes/` 或 `output.md`。如果 Agent / sub-agent 工具不可用，在 `source_notes` 或 `queries_and_sources.备注` 写明 fallback 原因。
 

@@ -5,7 +5,10 @@
 | 模板 | 文件 | 用途 |
 |---|---|---|
 | Research state | `sop/template-research-state.md` | 新 active 模板：当前研究状态、slot、派生项、历史快照 |
+| Research state 中文说明 | `sop/template-research-state.zh.md` | `Research state` 的中文字段解释与全阶段更新规则 |
+| Search opening | `sop/workflow-cli-overhaul/stage-opening-clarification.md` | 新 active 结构：opening brief 与 `notes/search-opening.md` 的最小字段 |
 | Search round | `sop/template-search-round.md` | 新 active 模板：每轮搜索证据、state delta、enoughness 初判 |
+| Search round human | `sop/template-search-round-human.md` | 新 active 模板：每轮搜索的人类阅读 companion summary，不替代 Search round 审计模板 |
 | 决策导向备忘录 | `sop/template-memo.md` | output 前最终 review：enoughness、action boundary、路径分流 |
 | Output 投递模板 | `sop/template-output.md` | 投递到 wiki inbox 的 frontmatter + 写作规范 |
 | 资产配置附加槽位 | `sop/template-investment-addon.md` | 按需启用：资产/投资类主题的额外约束 |
@@ -28,7 +31,7 @@
     URL: example.com/path
 ```
 
-适用于：`notes/research-state.md`、`notes/memo.md`、`sources/search-round-N.md`、`output.md`。
+适用于：`notes/research-state.md`、`notes/search-opening.md`、`notes/memo.md`、`sources/search-round-N.md`、`sources/search-round-N-human.md`、`output.md`。
 
 ---
 
@@ -37,7 +40,9 @@
 v0.8 设计意图：
 
 - `research-state.md` 替代新 run 中的 `task-card.md` 和 `judgment.md`。
+- opening 阶段生成 `notes/search-opening.md`，作为首轮检索计划和用户审阅记录。
 - 每轮搜索必须写 `search_round_summary.state_delta`，并更新当前 state。
+- 每轮搜索必须额外写 `sources/search-round-N-human.md`，作为问题驱动的人类阅读层摘要。
 - `midway` 不再是新流程 gate；旧 run 中的 `midway` 只作为 legacy gate 值处理。
 - `memo.md` 保留为 output 前的最终 enoughness / action boundary review。
 - `工具分配` 不迁入 slot；强制双轨和检索子 agent 隔离规则由 `AGENTS.md` 注入。

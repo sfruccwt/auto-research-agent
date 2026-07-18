@@ -12,10 +12,10 @@
 
 | 来源面 | 检索通道 | 查询 / 入口 | 来源 | 备注 |
 |---|---|---|---|---|
-| official_or_primary | agent-reach:web / browser:google / browser:bing |  |  |  |
-| market_or_news | agent-reach:search / agent-reach:web / browser:google / browser:bing |  |  |  |
-| academic | agent-reach:web / browser:google / browser:bing |  |  |  |
-| community_or_cases | agent-reach:social / agent-reach:dev / browser:site-search / browser:google / browser:bing |  |  |  |
+| official_or_primary | agent-reach:web / browser:iab-dom / browser:iab-js / browser:iab-text / browser:google / browser:bing |  |  |  |
+| market_or_news | agent-reach:search / agent-reach:web / browser:iab-dom / browser:iab-text / browser:google / browser:bing |  |  |  |
+| academic | agent-reach:web / browser:iab-dom / browser:iab-text / browser:google / browser:bing |  |  |  |
+| community_or_cases | agent-reach:social / agent-reach:dev / browser:iab-dom / browser:iab-js / browser:site-search / browser:chrome-auth / browser:google / browser:bing |  |  |  |
 
 检索通道可用值：
 
@@ -24,6 +24,11 @@
 - `agent-reach:social`
 - `agent-reach:dev`
 - `agent-reach:video`
+- `browser:iab-dom`
+- `browser:iab-js`
+- `browser:iab-text`
+- `browser:iab-screenshot`
+- `browser:chrome-auth`
 - `browser:google`
 - `browser:bing`
 - `browser:site-search`
@@ -41,7 +46,7 @@
 |---|---|---|---|
 |  |  | official / primary / market / academic / community |  |
 
-> 如 browser lane 使用登录态、个性化结果、站内搜索，或遇到站点风控 / App 扫码 / 授权缺失，必须在这里记录。
+> 如 browser route lane 使用登录态、个性化结果、站内搜索、Chrome extension、screenshot / vision，或遇到站点风控 / App 扫码 / 授权缺失 / backend 不可用，必须在这里记录。若使用 `browser:chrome-auth`，必须说明为什么 in-app browser 不适用；若使用 `browser:iab-screenshot`，必须说明截图触发原因。
 
 ## search_round_summary
 
@@ -71,17 +76,29 @@
 - 当前证据不足以支持什么:
 - 是否足够进入 memo:
 
-### next_search_options
+### proposed_next_round
 
-- continue_search:
+- questions:
+  1.
+  2.
+  3.
+- helps_original_intent:
+- expected_source_surfaces:
+- stop_when:
+- user_decision_needed:
+
+### next_action_options
+
+- propose_next_round:
 - pivot:
 - ask_user:
 - write_memo:
 - stop:
+- child_run:
 
 ### agent_recommendation
 
-`continue_search | pivot | ask_user | write_memo | stop`
+`propose_next_round | pivot | ask_user | write_memo | stop | child_run`
 
 ### required_user_confirmation
 

@@ -26,13 +26,17 @@ The deliverable is **content-finalized, not wiki-ready**: prose with inline sour
 
 ## 硬规则：搜索工具
 
-所有检索动作必须通过**检索子 agent**隔离执行，母 agent 默认不直接调用搜索或浏览器工具。目标是让 `agent-reach`、Chrome/browser 的原始工具返回停留在子 agent 上下文里，母 agent 只接收可写入 `sources/search-round-N.md` 的压缩结果。
+所有检索动作必须通过**检索子 agent**隔离执行，母 agent 默认不直接调用搜索或浏览器工具。目标是让 `agent-reach`、Browser/Chrome 的原始工具返回停留在子 agent 上下文里，母 agent 只接收可写入 `sources/search-round-N.md` 的压缩结果。
 
-所有检索动作仍必须走强制双轨：第一轨加载并使用 `agent-reach` skill，不直接调 WebSearch；第二轨使用 Chrome browser search lane（Google / Bing / 站内搜索之一或组合）。`agent-reach` 是 skill 名称，不是 slash command、外部命令或 MCP 服务名；执行时按该 skill 的路由表选择 search / web / dev / social / video 等具体工具。browser search lane 默认只读，不操作账号状态；只有 Chrome/browser backend 损坏或不可用时，整条 browser lane 才能 fallback / skipped，并必须记录原因。目标站内搜索缺少域名授权时，只跳过该站内搜索子项，改用公共 Google / Bing 完成 browser lane。
+所有检索动作仍必须走强制并行双轨：第一轨加载并使用 `agent-reach` skill，不直接调 WebSearch；第二轨使用 `browser route lane`。`agent-reach` 是 skill 名称，不是 slash command、外部命令或 MCP 服务名；执行时按该 skill 的路由表选择 search / web / dev / social / video 等具体工具。`browser route lane` 每轮至少使用 in-app browser 或 Chrome extension 之一；默认优先使用 in-app browser，只有需要用户 Chrome 登录态、cookies、profile、extensions、existing tabs 或用户明确授权的登录态站点时，才 fallback 到 Chrome extension。
 
-母 agent 可以二选一执行每轮搜索：(1) 派 1 个检索子 agent 同时跑 `agent-reach lane` 和 `browser-search lane` 并合并；(2) 同步派 2 个 lane 子 agent 分别检索，再由母 agent 合并。无论哪种方式，子 agent 只返回结构化压缩结果：查询 / 入口、标题 / 作者 / 日期 / URL、来源层级、1-3 句关键发现、冲突或新增缺口、`source_notes`、browser fallback / skipped 原因。母 agent 用这些结果填写现有 `queries_and_sources`、`key_findings`、`source_notes`、`search_round_summary.state_delta` 字段，不新增 search round 字段。禁止返回原始工具输出、长页面转储、无筛选搜索列表或大段引用。
+in-app browser 默认走中低成本路径：DOM snapshot、read-only page inspection JavaScript、scoped text/attribute extraction、Playwright locator。只有视觉布局、图片/视频/canvas 内容、UI 可见性、DOM 不可信、交互定位困难或用户明确要求截图时，才使用 screenshot / vision。Chrome extension 是 `browser route lane` 的 fallback，不是默认浏览器入口；若使用 Chrome extension，必须在 `source_notes` 中说明触发条件和为什么 in-app browser 不适用。
 
-母 agent 派出检索子 agent 时，必须在 prompt 中显式写明"不要调用 new-run.ps1，直接返回搜索结果；加载并使用 agent-reach skill 搜索，不要直接调 WebSearch；同时强制使用 Chrome browser search lane 做 Google / Bing / 站内搜索之一或组合；只读，不操作账号状态；只返回结构化压缩结果和 URL 清单，不返回原始工具输出；只有 Chrome/browser backend 损坏或不可用时，才记录 browser:skipped/fallback 及原因"。
+`browser route lane` 默认只读，不操作账号状态。只有 Browser/Chrome backend 损坏、不可用、连接失败或授权缺失导致 in-app browser 与 Chrome extension 都不能完成本轮浏览器轨时，整条 browser route lane 才能 fallback / skipped，并必须记录原因。目标站内搜索缺少域名授权时，只跳过该站内搜索子项；browser route lane 仍应优先使用 in-app browser 或公共 Google / Bing / 站内公开入口完成复核。
+
+母 agent 可以二选一执行每轮搜索：(1) 派 1 个检索子 agent 同时跑 `agent-reach lane` 和 `browser route lane` 并合并；(2) 同步派 2 个 lane 子 agent 分别检索，再由母 agent 合并。无论哪种方式，子 agent 只返回结构化压缩结果：查询 / 入口、标题 / 作者 / 日期 / URL、来源层级、1-3 句关键发现、冲突或新增缺口、`source_notes`、browser fallback / skipped 原因。母 agent 用这些结果填写现有 `queries_and_sources`、`key_findings`、`source_notes`、`search_round_summary.state_delta` 字段，不新增 search round 字段。禁止返回原始工具输出、长页面转储、无筛选搜索列表或大段引用。
+
+母 agent 派出检索子 agent 时，必须在 prompt 中显式写明"不要调用 new-run.ps1，直接返回搜索结果；加载并使用 agent-reach skill 搜索，不要直接调 WebSearch；同时强制使用 browser route lane：每轮至少使用 in-app browser 或 Chrome extension 之一，默认优先 in-app browser；in-app browser 走 DOM/text/read-only JS/Playwright locator 等中低成本路径，只有视觉布局、图片/视频/canvas、UI 可见性、DOM 不可信、交互定位困难或用户明确要求时才 screenshot/vision；只有需要用户 Chrome 登录态、cookies、profile、extensions、existing tabs 或用户明确授权的登录态站点时，才 fallback 到 Chrome extension；只读，不操作账号状态；只返回结构化压缩结果和 URL 清单，不返回原始工具输出；只有 Browser/Chrome backend 损坏、不可用、连接失败或授权缺失导致浏览器轨无法完成时，才记录 browser:skipped/fallback 及原因"。
 
 ## 硬规则：所有研究请求一律先开 run
 
@@ -42,7 +46,7 @@ The deliverable is **content-finalized, not wiki-ready**: prose with inline sour
 
 母 agent 通过 Agent 工具派出子 agent 执行任务时，由**母 agent 决定**子 agent 是否需要开独立 run：
 
-- **检索任务**（搜某个问题、查文档、找社区讨论）：子 agent **不开 run**，只返回搜索结果摘要和 URL 清单；原始工具输出留在子 agent 上下文里，不交给母 agent。母 agent 只把压缩结果整合到母 run 的 notes/ 或 sources/ 中。母 agent 在 prompt 中须明确写出"不要调用 new-run.ps1，直接返回搜索结果；加载并使用 agent-reach skill 搜索，不要直接调 WebSearch；同时强制使用 Chrome browser search lane 做 Google / Bing / 站内搜索之一或组合；只读，不操作账号状态；只返回结构化压缩结果和 URL 清单，不返回原始工具输出；只有 Chrome/browser backend 损坏或不可用时，才记录 browser:skipped/fallback 及原因"。
+- **检索任务**（搜某个问题、查文档、找社区讨论）：子 agent **不开 run**，只返回搜索结果摘要和 URL 清单；原始工具输出留在子 agent 上下文里，不交给母 agent。母 agent 只把压缩结果整合到母 run 的 notes/ 或 sources/ 中。母 agent 在 prompt 中须明确写出"不要调用 new-run.ps1，直接返回搜索结果；加载并使用 agent-reach skill 搜索，不要直接调 WebSearch；同时强制使用 browser route lane：每轮至少使用 in-app browser 或 Chrome extension 之一，默认优先 in-app browser；in-app browser 走 DOM/text/read-only JS/Playwright locator 等中低成本路径，只有视觉布局、图片/视频/canvas、UI 可见性、DOM 不可信、交互定位困难或用户明确要求时才 screenshot/vision；只有需要用户 Chrome 登录态、cookies、profile、extensions、existing tabs 或用户明确授权的登录态站点时，才 fallback 到 Chrome extension；只读，不操作账号状态；只返回结构化压缩结果和 URL 清单，不返回原始工具输出；只有 Browser/Chrome backend 损坏、不可用、连接失败或授权缺失导致浏览器轨无法完成时，才记录 browser:skipped/fallback 及原因"。
 
 - **独立子课题**（有独立研究问题和独立产出的课题）：母 agent 判断需要拆分时，**可以自主决定开子 run**，也可以提示用户确认后再开。开 run 时须传入 `-ParentRunId` 参数，子 run 会建在母 run 的 `sub/` 目录下。
 
